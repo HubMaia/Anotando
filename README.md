@@ -95,25 +95,24 @@ O frontend estará disponível em `http://localhost:3000` e o backend em `http:/
 ### Tabela de Usuários
 
 ```sql
-CREATE TABLE users (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE usuarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100),
+  email VARCHAR(100) UNIQUE,
+  senha VARCHAR(255)
 );
 ```
 
 ### Tabela de Registros
 
 ```sql
-CREATE TABLE records (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT,
-    activity VARCHAR(255) NOT NULL,
-    description TEXT,
-    date DATE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+CREATE TABLE registros (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT,
+  data DATE,
+  horario ENUM('Café - Antes', 'Café - Depois', 'Almoço - Antes', 'Almoço - Depois', 'Janta - Antes', 'Janta - Depois'),
+  valor_glicemia INT,
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
 ```
 
