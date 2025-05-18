@@ -224,4 +224,4 @@ Este projeto está sob a licença MIT.
 
 ## 📞 Suporte
 
-Para suporte, envie um email para [seu-email@exemplo.com] ou abra uma issue no GitHub.
+Para suporte, envie um email para [tecmaia7@gmail.com] ou abra uma issue no GitHub.
