@@ -218,8 +218,6 @@ O frontend iniciará na porta 3000 e seu navegador abrirá automaticamente com a
 
 Este projeto está sob a licença MIT.
 
-## ✒️ Autores
-
 ## 📞 Suporte
 
 Para suporte, envie um email para [seu-email@exemplo.com] ou abra uma issue no GitHub.
