@@ -220,9 +220,6 @@ Este projeto está sob a licença MIT.
 
 ## ✒️ Autores
 
-- **Maia** - _Desenvolvimento_ - [HubMaia](https://github.com/HubMaia)
-- **Gustavo Nascimento** - _Desenvolvimento Backend_ - [GRNSz](https://github.com/GRNSz)
-
 ## 📞 Suporte
 
 Para suporte, envie um email para [seu-email@exemplo.com] ou abra uma issue no GitHub.
