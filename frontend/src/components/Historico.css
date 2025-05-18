@@ -1,0 +1,152 @@
+.historico-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.historico-container h3 {
+  color: #2c3e50;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #ecf0f1;
+  padding-bottom: 0.75rem;
+}
+
+.filtro-container {
+  margin-bottom: 1.5rem;
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 6px;
+}
+
+.filtro-campos {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filtro-campos .form-group {
+  flex: 1;
+  min-width: 150px;
+  margin-bottom: 0;
+}
+
+.filtro-button, 
+.limpar-button {
+  padding: 0.75rem 1.25rem;
+  border-radius: 4px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  align-self: flex-end;
+  margin-top: auto;
+}
+
+.filtro-button {
+  background-color: #3498db;
+  color: white;
+}
+
+.filtro-button:hover {
+  background-color: #2980b9;
+}
+
+.limpar-button {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.limpar-button:hover {
+  background-color: #c0392b;
+}
+
+.tabela-container {
+  overflow-x: auto;
+}
+
+.registros-tabela {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.registros-tabela th,
+.registros-tabela td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.registros-tabela th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.registros-tabela tr:hover {
+  background-color: #f8f9fa;
+}
+
+.excluir-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.excluir-button:hover {
+  background-color: #c0392b;
+}
+
+.valor-glicemia {
+  font-weight: 600;
+}
+
+.valor-glicemia.baixo {
+  color: #e74c3c;
+}
+
+.valor-glicemia.normal {
+  color: #27ae60;
+}
+
+.valor-glicemia.alto {
+  color: #f39c12;
+}
+
+.error-message {
+  background-color: #ffecec;
+  color: #e74c3c;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.loading-message,
+.no-data-message {
+  text-align: center;
+  padding: 2rem;
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .filtro-campos {
+    flex-direction: column;
+  }
+  
+  .filtro-campos .form-group {
+    min-width: 100%;
+    margin-bottom: 1rem;
+  }
+  
+  .filtro-button, 
+  .limpar-button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+} 
