@@ -1,127 +1,138 @@
-# Anotando - Aplicativo de Controle de Glicemia
+# Anotando - Sistema de Registro de Atividades
 
-Um aplicativo web para controle e monitoramento de glicemia, desenvolvido com Node.js, React, MySQL e outras tecnologias modernas.
+Um sistema web para registro e acompanhamento de atividades, desenvolvido com React, Node.js e MySQL.
 
-## Funcionalidades
+## 🚀 Tecnologias Utilizadas
 
-- Cadastro e autenticação de usuários
-- Registro de medições de glicemia em diferentes momentos do dia
-- Visualização do histórico de registros
-- Filtros por período
-- Interface responsiva e amigável
+### Frontend
 
-## Tecnologias Utilizadas
+- React.js
+- Material-UI
+- React Router DOM
+- Axios
 
-- **Backend**: Node.js, Express, MySQL
-- **Frontend**: React, CSS
-- **Autenticação**: JWT (JSON Web Tokens)
-- **Banco de Dados**: MySQL
+### Backend
 
-## Pré-requisitos
+- Node.js
+- Express
+- MySQL
+- JWT para autenticação
+
+## 📋 Pré-requisitos
 
 - Node.js (versão 14 ou superior)
-- MySQL (versão 5.7 ou superior)
-- npm ou yarn
+- MySQL (versão 8.0 ou superior)
+- NPM ou Yarn
 
-## Configuração do Banco de Dados
-
-1. Crie um banco de dados MySQL chamado `anotandodb`:
-
-```sql
-CREATE DATABASE anotandodb;
-```
-
-2. Use o banco de dados:
-
-```sql
-USE anotandodb;
-```
-
-3. Execute os seguintes comandos SQL para criar as tabelas necessárias:
-
-```sql
-CREATE TABLE usuarios (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nome VARCHAR(100),
-  email VARCHAR(100) UNIQUE,
-  senha VARCHAR(255)
-);
-
-CREATE TABLE registros (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  usuario_id INT,
-  data DATE,
-  horario ENUM('Café - Antes', 'Café - Depois', 'Almoço - Antes', 'Almoço - Depois', 'Janta - Antes', 'Janta - Depois'),
-  valor_glicemia INT,
-  FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-);
-```
-
-## Instalação
+## 🔧 Instalação
 
 1. Clone o repositório:
 
 ```bash
-git clone <url-do-repositorio>
-cd anotando
+git clone https://github.com/HubMaia/system-Anotando.git
+cd system-Anotando
 ```
 
-2. Instale as dependências do backend e frontend:
+2. Instale as dependências do backend:
 
 ```bash
-npm run install-all
+cd backend
+npm install
 ```
 
-3. Copie o arquivo `.env.example` para `.env` e configure as variáveis de ambiente:
+3. Instale as dependências do frontend:
 
 ```bash
-cp .env.example .env
+cd ../frontend
+npm install
 ```
 
-4. Edite o arquivo `.env` com suas configurações locais (credenciais do banco, etc.)
+4. Configure o banco de dados:
 
-## Executando a Aplicação
+- Crie um banco de dados MySQL chamado `anotando`
+- Execute os scripts SQL fornecidos na pasta `backend/database`
 
-1. Para executar o backend e frontend simultaneamente:
+5. Configure as variáveis de ambiente:
+
+- Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+
+```
+DB_HOST=localhost
+DB_USER=seu_usuario
+DB_PASSWORD=sua_senha
+DB_NAME=anotando
+JWT_SECRET=sua_chave_secreta
+```
+
+## 🚀 Executando o Projeto
+
+1. Inicie o servidor backend:
 
 ```bash
-npm run dev
+cd backend
+npm start
 ```
 
-2. Para executar apenas o backend:
+2. Em outro terminal, inicie o frontend:
 
 ```bash
-npm run server
+cd frontend
+npm start
 ```
 
-3. Para executar apenas o frontend:
+O frontend estará disponível em `http://localhost:3000` e o backend em `http://localhost:5000`.
 
-```bash
-npm run client
+## 📝 Funcionalidades
+
+- Autenticação de usuários
+- Registro de atividades
+- Visualização de histórico
+- Interface responsiva
+- Proteção de rotas
+
+## 🔐 Estrutura do Banco de Dados
+
+### Tabela de Usuários
+
+```sql
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 ```
 
-A aplicação estará disponível em:
+### Tabela de Registros
 
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:5000
+```sql
+CREATE TABLE records (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    activity VARCHAR(255) NOT NULL,
+    description TEXT,
+    date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+```
 
-## Rotas da API
+## 👥 Contribuição
 
-### Autenticação
+1. Faça um Fork do projeto
+2. Crie uma Branch para sua Feature (`git checkout -b feature/AmazingFeature`)
+3. Faça o Commit de suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Faça o Push para a Branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
-- `POST /api/auth/register` - Registrar novo usuário
-- `POST /api/auth/login` - Login de usuário
-- `GET /api/auth/me` - Obter dados do usuário autenticado
+## 📄 Licença
 
-### Registros de Glicemia
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-- `GET /api/registros` - Listar todos os registros do usuário
-- `GET /api/registros/:id` - Obter um registro específico
-- `POST /api/registros` - Criar novo registro
-- `PUT /api/registros/:id` - Atualizar um registro
-- `DELETE /api/registros/:id` - Excluir um registro
-- `GET /api/registros/periodo/:dataInicio/:dataFim` - Buscar registros por período
+## ✒️ Autores
 
-## Licença
+- **Maia** - _Desenvolvimento_ - [HubMaia](https://github.com/HubMaia)
 
-Este projeto está licenciado sob a licença MIT.
+## 📞 Suporte
+
+Para suporte, envie um email para [seu-email@exemplo.com] ou abra uma issue no GitHub.
