@@ -218,10 +218,6 @@ O frontend iniciará na porta 3000 e seu navegador abrirá automaticamente com a
 
 Este projeto está sob a licença MIT.
 
-## ✒️ Autores
-
-- **Maia** - _Desenvolvimento_ - [HubMaia](https://github.com/HubMaia)
-
 ## 📞 Suporte
 
 Para suporte, envie um email para [tecmaia7@gmail.com] ou abra uma issue no GitHub.
