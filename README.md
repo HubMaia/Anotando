@@ -52,10 +52,10 @@ cd Anotando
 
 ```sql
 -- Criar o banco de dados
-CREATE DATABASE anotando;
+CREATE DATABASE anotandodb;
 
 -- Usar o banco de dados
-USE anotando;
+USE anotandodb;
 
 -- Criar a tabela de usuários
 CREATE TABLE usuarios (
@@ -85,7 +85,7 @@ CREATE TABLE registros (
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=sua_senha_do_mysql
-DB_NAME=anotando
+DB_NAME=anotandodb
 JWT_SECRET=uma_chave_secreta_qualquer
 ```
 
@@ -195,7 +195,7 @@ O frontend iniciará na porta 3000 e seu navegador abrirá automaticamente com a
 
    - Verifique se o MySQL está rodando
    - Confira as credenciais no arquivo `.env`
-   - Certifique-se que o banco `anotando` existe
+   - Certifique-se que o banco `anotandodb` existe
 
 2. **Erro ao iniciar o frontend**
 
