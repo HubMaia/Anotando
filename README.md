@@ -29,7 +29,7 @@ Um sistema web para registro e acompanhamento de atividades, desenvolvido com Re
 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/HubMaia/system-Anotando.git
+git clone https://github.com/HubMaia/Anotando.git
 cd system-Anotando
 ```
 
