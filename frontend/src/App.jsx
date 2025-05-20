@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
-import LoginForm from './components/LoginForm';
-import RegistroForm from './components/RegistroForm';
-import Historico from './components/Historico';
+import LoginForm from './components/LoginForm/LoginForm';
+import RegistroForm from './components/RegistroForm/RegistroForm';
+import Historico from './components/Historico/Historico';
 import './App.css';
 
 // Componente para a página de registro de usuário
