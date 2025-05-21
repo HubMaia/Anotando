@@ -74,6 +74,18 @@ CREATE TABLE registros (
   valor_glicemia INT,
   FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
+
+-- Se o banco não funcionar, teste fazer essa atualização
+ ALTER TABLE registros 
+MODIFY COLUMN horario ENUM(
+    'Cafe - Antes', 
+    'Cafe - Depois', 
+    'Almoco - Antes', 
+    'Almoco - Depois', 
+    'Janta - Antes', 
+    'Janta - Depois'
+);
+
 ```
 
 ### 3. Configure as Variáveis de Ambiente
