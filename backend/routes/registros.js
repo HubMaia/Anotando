@@ -59,10 +59,10 @@ router.post('/', async (req, res) => {
     
     // Validar o horário (deve ser um dos valores permitidos)
     const horariosPermitidos = [
-      'Café - Antes', 
-      'Café - Depois', 
-      'Almoço - Antes', 
-      'Almoço - Depois', 
+      'Cafe - Antes', 
+      'Cafe - Depois', 
+      'Almoco - Antes', 
+      'Almoco - Depois', 
       'Janta - Antes', 
       'Janta - Depois'
     ];

@@ -13,10 +13,10 @@ const RegistroForm = ({ onRegistroAdded }) => {
   const [loading, setLoading] = useState(false);
 
   const horarios = [
-    'Café - Antes',
-    'Café - Depois',
-    'Almoço - Antes',
-    'Almoço - Depois',
+    'Cafe - Antes',
+    'Cafe - Depois',
+    'Almoco - Antes',
+    'Almoco - Depois',
     'Janta - Antes',
     'Janta - Depois'
   ];
