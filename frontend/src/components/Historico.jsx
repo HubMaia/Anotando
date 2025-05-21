@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import './Historico.css';
 
 const Historico = () => {
@@ -138,6 +140,78 @@ const Historico = () => {
     return 'normal';
   };
 
+  const getMediaDiaria = () => {
+    // Agrupa os registros por data e calcula a média de cada dia
+    const medias = {};
+    registros.forEach(registro => {
+      const data = registro.data;
+      if (!medias[data]) {
+        medias[data] = { soma: 0, count: 0 };
+      }
+      medias[data].soma += registro.valor_glicemia;
+      medias[data].count += 1;
+    });
+    // Retorna array de objetos { data, media }
+    return Object.entries(medias).map(([data, { soma, count }]) => ({
+      data,
+      media: soma / count
+    }));
+  };
+
+  // Função para calcular médias agrupadas por período
+  const agruparMedias = (periodo) => {
+    const grupos = {};
+    registros.forEach(registro => {
+      let chave;
+      const dataObj = new Date(registro.data);
+      if (periodo === 'mensal') {
+        chave = `${dataObj.getFullYear()}-${String(dataObj.getMonth() + 1).padStart(2, '0')}`;
+      } else if (periodo === 'semanal') {
+        const ano = dataObj.getFullYear();
+        const primeira = new Date(dataObj.getFullYear(), 0, 1);
+        const dias = Math.floor((dataObj - primeira) / (24 * 60 * 60 * 1000));
+        const semana = Math.ceil((dias + primeira.getDay() + 1) / 7);
+        chave = `${ano}-S${semana}`;
+      } else {
+        chave = registro.data;
+      }
+      if (!grupos[chave]) grupos[chave] = { soma: 0, count: 0 };
+      grupos[chave].soma += registro.valor_glicemia;
+      grupos[chave].count += 1;
+    });
+    return Object.entries(grupos).map(([chave, { soma, count }]) => ({
+      chave,
+      media: soma / count
+    }));
+  };
+
+  const gerarPDFPersonalizado = (periodo) => {
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    let titulo = 'Relatório Diário da Média de Glicemia';
+    if (periodo === 'mensal') titulo = 'Relatório Mensal da Média de Glicemia';
+    if (periodo === 'semanal') titulo = 'Relatório Semanal da Média de Glicemia';
+    doc.text(titulo, 105, 18, { align: 'center' });
+    doc.setFontSize(12);
+    doc.setTextColor(80, 80, 80);
+    doc.text(`Gerado em: ${(new Date()).toLocaleDateString('pt-BR')}`, 14, 28);
+    const medias = agruparMedias(periodo);
+    const tableData = medias.map(({ chave, media }) => [
+      periodo === 'diario' ? formatarData(chave) : chave,
+      media.toFixed(2) + ' mg/dL'
+    ]);
+    autoTable(doc, {
+      head: [[periodo === 'diario' ? 'Data' : (periodo === 'mensal' ? 'Mês' : 'Semana'), 'Média (mg/dL)']],
+      body: tableData,
+      startY: 35,
+      styles: { halign: 'center', fontSize: 12 },
+      headStyles: { fillColor: [41, 128, 185], textColor: 255, fontStyle: 'bold' },
+      alternateRowStyles: { fillColor: [245, 248, 250] },
+      margin: { left: 14, right: 14 }
+    });
+    doc.save(`relatorio-media-glicemia-${periodo}.pdf`);
+  };
+
   return (
     <div className="historico-container">
       <h3>Histórico de Registros</h3>
@@ -183,6 +257,17 @@ const Historico = () => {
             </button>
           </div>
         </form>
+        <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
+          <button onClick={() => gerarPDFPersonalizado('diario')} className="filtro-button">
+            PDF Média Diária
+          </button>
+          <button onClick={() => gerarPDFPersonalizado('semanal')} className="filtro-button" style={{ background: '#27ae60' }}>
+            PDF Média Semanal
+          </button>
+          <button onClick={() => gerarPDFPersonalizado('mensal')} className="filtro-button" style={{ background: '#f39c12' }}>
+            PDF Média Mensal
+          </button>
+        </div>
       </div>
       
       {error && <div className="error-message">{error}</div>}
@@ -228,4 +313,4 @@ const Historico = () => {
   );
 };
 
-export default Historico; 
+export default Historico;

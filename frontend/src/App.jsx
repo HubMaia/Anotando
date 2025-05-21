@@ -4,6 +4,7 @@ import axios from 'axios';
 import LoginForm from './components/LoginForm';
 import RegistroForm from './components/RegistroForm';
 import Historico from './components/Historico';
+import MinhaConta from './components/MinhaConta';
 import './App.css';
 
 // Componente para a página de registro de usuário
@@ -148,28 +149,29 @@ const RegisterPage = () => {
 const Dashboard = ({ isAuthenticated, setIsAuthenticated }) => {
   const [user, setUser] = useState(null);
   const [registrosAtualizados, setRegistrosAtualizados] = useState(false);
-  
+  const [menuAberto, setMenuAberto] = useState(false);
+
   useEffect(() => {
     const userJson = localStorage.getItem('user');
     if (userJson) {
       setUser(JSON.parse(userJson));
     }
   }, []);
-  
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setIsAuthenticated(false);
   };
-  
+
   const handleRegistroAdded = () => {
     setRegistrosAtualizados(!registrosAtualizados);
   };
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
-  
+
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
@@ -177,23 +179,29 @@ const Dashboard = ({ isAuthenticated, setIsAuthenticated }) => {
           <h1>Anotando</h1>
           <p>Controle de Glicemia</p>
         </div>
-        
+        <nav className="navbar">
+          <button className="menu-toggle" onClick={() => setMenuAberto(!menuAberto)}>
+            ☰
+          </button>
+          <ul className={`navbar-menu${menuAberto ? ' open' : ''}`}>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/minha-conta">Minha conta</a></li>
+          </ul>
+        </nav>
         {user && (
           <div className="user-info">
             <span>Olá, {user.nome}</span>
-            <button onClick={handleLogout} className="logout-button">
+            <button onClick={handleLogout} className="logout-button" style={{marginLeft: 12}}>
               Sair
             </button>
           </div>
         )}
       </header>
-      
       <main className="dashboard-content">
         <div className="dashboard-grid">
           <div className="form-section">
             <RegistroForm onRegistroAdded={handleRegistroAdded} />
           </div>
-          
           <div className="historico-section">
             <Historico key={registrosAtualizados} />
           </div>
@@ -247,6 +255,10 @@ const App = () => {
           } 
         />
         <Route 
+          path="/minha-conta" 
+          element={<MinhaConta />} 
+        />
+        <Route 
           path="/" 
           element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} 
         />
@@ -255,4 +267,4 @@ const App = () => {
   );
 };
 
-export default App; 
+export default App;

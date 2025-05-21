@@ -133,4 +133,46 @@ router.get('/me', authMiddleware, async (req, res) => {
   }
 });
 
-module.exports = { router, authMiddleware }; 
+// Rota para atualizar email e/ou senha do usuário autenticado
+router.put('/atualizar', authMiddleware, async (req, res) => {
+  try {
+    const userId = req.userData.userId;
+    const { email, senha, novaSenha } = req.body;
+
+    // Buscar usuário atual
+    const [users] = await pool.query('SELECT * FROM usuarios WHERE id = ?', [userId]);
+    if (users.length === 0) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
+    const user = users[0];
+
+    // Verifica senha atual
+    const passwordMatch = await bcrypt.compare(senha, user.senha);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Senha atual incorreta' });
+    }
+
+    // Atualiza email se mudou
+    if (email && email !== user.email) {
+      // Verifica se email já existe
+      const [exist] = await pool.query('SELECT id FROM usuarios WHERE email = ? AND id != ?', [email, userId]);
+      if (exist.length > 0) {
+        return res.status(409).json({ message: 'Email já cadastrado' });
+      }
+      await pool.query('UPDATE usuarios SET email = ? WHERE id = ?', [email, userId]);
+    }
+
+    // Atualiza senha se novaSenha foi enviada
+    if (novaSenha && novaSenha.length >= 6) {
+      const hashed = await bcrypt.hash(novaSenha, 10);
+      await pool.query('UPDATE usuarios SET senha = ? WHERE id = ?', [hashed, userId]);
+    }
+
+    res.status(200).json({ message: 'Dados atualizados com sucesso!' });
+  } catch (error) {
+    console.error('Erro ao atualizar dados do usuário:', error);
+    res.status(500).json({ message: 'Erro ao atualizar dados do usuário' });
+  }
+});
+
+module.exports = { router, authMiddleware };

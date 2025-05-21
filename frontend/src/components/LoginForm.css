@@ -3,40 +3,80 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f5f8fa;
+  background: linear-gradient(120deg, #3498db 0%, #6dd5fa 100%);
+  animation: login-bg-fade 2s;
+}
+
+@keyframes login-bg-fade {
+  0% {
+    filter: brightness(0.7) blur(2px);
+  }
+  100% {
+    filter: brightness(1) blur(0);
+  }
 }
 
 .login-card {
   width: 100%;
   max-width: 400px;
-  padding: 2rem;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem 2rem 2rem 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(41, 128, 185, 0.18);
+  position: relative;
+  animation: login-card-float 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+@keyframes login-card-float {
+  0% {
+    transform: translateY(40px) scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
 .login-card h2 {
   text-align: center;
-  color: #2c3e50;
+  color: #2980b9;
   margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+  font-size: 2rem;
+  font-weight: 700;
+  animation: fade-in 1s 0.2s backwards;
 }
 
 .login-card h3 {
   text-align: center;
   color: #7f8c8d;
-  font-weight: normal;
-  font-size: 1rem;
+  font-weight: 400;
+  font-size: 1.1rem;
   margin-bottom: 2rem;
+  animation: fade-in 1s 0.4s backwards;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .form-group {
   margin-bottom: 1.5rem;
+  animation: fade-in 1s 0.6s backwards;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  font-weight: 500;
+  font-weight: 600;
   color: #34495e;
 }
 
@@ -46,48 +86,57 @@
   font-size: 1rem;
   border: 1px solid #ddd;
   border-radius: 4px;
-  transition: border-color 0.3s;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background: #fafdff;
+  box-shadow: 0 1px 2px rgba(41, 128, 185, 0.04);
 }
 
 .form-group input:focus {
   outline: none;
   border-color: #3498db;
+  box-shadow: 0 0 0 2px #6dd5fa44;
 }
 
 .login-button {
   width: 100%;
   padding: 0.75rem;
-  background-color: #3498db;
+  background: linear-gradient(90deg, #3498db 60%, #6dd5fa 100%);
   color: white;
   border: none;
   border-radius: 4px;
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background 0.3s, transform 0.2s;
+  margin-top: 0.5rem;
+  box-shadow: 0 2px 8px rgba(41, 128, 185, 0.08);
+  animation: fade-in 1s 0.8s backwards;
 }
 
 .login-button:hover {
-  background-color: #2980b9;
+  background: linear-gradient(90deg, #217dbb 60%, #3498db 100%);
+  transform: translateY(-2px) scale(1.03);
 }
 
 .login-button:disabled {
-  background-color: #95a5a6;
+  background: #95a5a6;
   cursor: not-allowed;
 }
 
 .error-message {
-  background-color: #ffecec;
+  background: #ffecec;
   color: #e74c3c;
   padding: 0.75rem;
   border-radius: 4px;
   margin-bottom: 1.5rem;
   text-align: center;
+  animation: fade-in 1s 0.7s backwards;
 }
 
 .register-link {
   margin-top: 2rem;
   text-align: center;
+  animation: fade-in 1s 1s backwards;
 }
 
 .register-link p {
@@ -96,15 +145,24 @@
 }
 
 .register-button {
-  background: none;
-  border: none;
   color: #3498db;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 0;
+  background: none;
+  border: 1px solid #3498db;
+  border-radius: 4px;
+  font-weight: 600;
+  padding: 0.5rem 1.2rem;
   font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
 }
 
 .register-button:hover {
-  text-decoration: underline;
-} 
+  background: #3498db;
+  color: #fff;
+}
+
+@media (max-width: 500px) {
+  .login-card {
+    padding: 1.2rem 0.5rem 1rem 0.5rem;
+  }
+}

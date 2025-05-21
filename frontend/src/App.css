@@ -157,6 +157,45 @@ body {
   gap: 2rem;
 }
 
+/* Estilos para a Navbar */
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #fff;
+}
+
+.navbar-menu {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-link-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  transition: color 0.2s;
+}
+
+.navbar-link-btn:hover {
+  color: #f39c12;
+}
+
 /* Responsividade */
 @media (max-width: 992px) {
   .dashboard-grid {
@@ -179,4 +218,25 @@ body {
     flex-direction: column;
     gap: 0.5rem;
   }
-} 
+}
+
+@media (max-width: 768px) {
+  .navbar-menu {
+    display: none;
+    flex-direction: column;
+    background: #3498db;
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    min-width: 150px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 10;
+  }
+  .navbar-menu.open {
+    display: flex;
+  }
+  .menu-toggle {
+    display: block;
+  }
+}
