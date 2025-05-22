@@ -51,13 +51,13 @@
 
 .form-group input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #03c596;
 }
 
 .login-button {
   width: 100%;
   padding: 0.75rem;
-  background-color: #3498db;
+  background-color: #03c596;
   color: white;
   border: none;
   border-radius: 4px;
@@ -68,7 +68,7 @@
 }
 
 .login-button:hover {
-  background-color: #2980b9;
+  background-color: #02a37d;
 }
 
 .login-button:disabled {
@@ -85,6 +85,16 @@
   text-align: center;
 }
 
+.success-message {
+  background-color: #e6fcf7;
+  color: #03c596;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  border: 1px solid #03c596;
+}
+
 .register-link {
   margin-top: 2rem;
   text-align: center;
@@ -98,7 +108,7 @@
 .register-button {
   background: none;
   border: none;
-  color: #3498db;
+  color: #03c596;
   font-weight: 500;
   cursor: pointer;
   padding: 0;

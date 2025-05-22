@@ -132,10 +132,22 @@ const Historico = () => {
     return data.toLocaleDateString('pt-BR');
   };
 
-  const getStatusGlicemia = (valor) => {
-    if (valor < 70) return 'baixo';
-    if (valor > 180) return 'alto';
-    return 'normal';
+  const getStatusGlicemia = (valor, horario) => {
+    // Verifica se é uma medição em jejum (Antes)
+    const isJejum = horario.includes('Antes');
+    
+    if (valor < 70) return 'hipoglicemia';
+    
+    if (isJejum) {
+      // Critérios para medição em jejum
+      if (valor >= 70 && valor <= 99) return 'normal';
+      if (valor >= 100 && valor <= 125) return 'pre-diabetes';
+      return 'diabetes';
+    } else {
+      // Critérios para medição pós-refeição
+      if (valor < 200) return 'normal';
+      return 'diabetes';
+    }
   };
 
   return (
@@ -207,7 +219,7 @@ const Historico = () => {
                 <tr key={registro.id}>
                   <td>{formatarData(registro.data)}</td>
                   <td>{registro.horario}</td>
-                  <td className={`valor-glicemia ${getStatusGlicemia(registro.valor_glicemia)}`}>
+                  <td className={`valor-glicemia ${getStatusGlicemia(registro.valor_glicemia, registro.horario)}`}>
                     {registro.valor_glicemia}
                   </td>
                   <td>

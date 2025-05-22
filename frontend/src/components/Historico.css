@@ -44,12 +44,12 @@
 }
 
 .filtro-button {
-  background-color: #3498db;
+  background-color: #03c596;
   color: white;
 }
 
 .filtro-button:hover {
-  background-color: #2980b9;
+  background-color: #02a37d;
 }
 
 .limpar-button {
@@ -105,16 +105,20 @@
   font-weight: 600;
 }
 
-.valor-glicemia.baixo {
-  color: #e74c3c;
+.valor-glicemia.hipoglicemia {
+  color: #3498db; /* Azul */
 }
 
 .valor-glicemia.normal {
-  color: #27ae60;
+  color: #27ae60; /* Verde */
 }
 
-.valor-glicemia.alto {
-  color: #f39c12;
+.valor-glicemia.pre-diabetes {
+  color: #f1c40f; /* Amarelo */
+}
+
+.valor-glicemia.diabetes {
+  color: #e74c3c; /* Vermelho */
 }
 
 .error-message {

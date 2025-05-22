@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import novoRegistroImage from '../assets/images/NOVOREGISTRO-IMAGE.png';
+import solImage from '../assets/images/SOL.png';
+import luaImage from '../assets/images/LUA.png';
 import './RegistroForm.css';
 
 const RegistroForm = ({ onRegistroAdded }) => {
@@ -11,21 +14,46 @@ const RegistroForm = ({ onRegistroAdded }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const horarios = [
-    'Cafe - Antes',
-    'Cafe - Depois',
-    'Almoco - Antes',
-    'Almoco - Depois',
-    'Janta - Antes',
-    'Janta - Depois'
+    { value: 'Cafe - Antes', label: 'Café - Antes', icon: solImage },
+    { value: 'Cafe - Depois', label: 'Café - Depois', icon: solImage },
+    { value: 'Almoco - Antes', label: 'Almoço - Antes', icon: solImage },
+    { value: 'Almoco - Depois', label: 'Almoço - Depois', icon: solImage },
+    { value: 'Janta - Antes', label: 'Janta - Antes', icon: luaImage },
+    { value: 'Janta - Depois', label: 'Janta - Depois', icon: luaImage }
   ];
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+    setError('');
+    setSuccess('');
+  };
+
+  const handleHorarioSelect = (horario) => {
+    setFormData({
+      ...formData,
+      horario: horario.value
+    });
+    setIsDropdownOpen(false);
     setError('');
     setSuccess('');
   };
@@ -85,9 +113,14 @@ const RegistroForm = ({ onRegistroAdded }) => {
     }
   };
 
+  const selectedHorario = horarios.find(h => h.value === formData.horario);
+
   return (
     <div className="registro-form-container">
-      <h3>Novo Registro</h3>
+      <div className="registro-header">
+        <img src={novoRegistroImage} alt="Novo Registro" className="novo-registro-image" />
+        <h3>Novo Registro</h3>
+      </div>
       
       {error && <div className="error-message">{error}</div>}
       {success && <div className="success-message">{success}</div>}
@@ -107,20 +140,35 @@ const RegistroForm = ({ onRegistroAdded }) => {
         
         <div className="form-group">
           <label htmlFor="horario">Horário</label>
-          <select
-            id="horario"
-            name="horario"
-            value={formData.horario}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Selecione o horário</option>
-            {horarios.map(horario => (
-              <option key={horario} value={horario}>
-                {horario}
-              </option>
-            ))}
-          </select>
+          <div className="custom-select" ref={dropdownRef}>
+            <div 
+              className="select-selected"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              {selectedHorario ? (
+                <div className="selected-option">
+                  <img src={selectedHorario.icon} alt="" className="time-icon" />
+                  <span>{selectedHorario.label}</span>
+                </div>
+              ) : (
+                'Selecione o horário'
+              )}
+            </div>
+            {isDropdownOpen && (
+              <div className="select-items">
+                {horarios.map(horario => (
+                  <div
+                    key={horario.value}
+                    className="select-item"
+                    onClick={() => handleHorarioSelect(horario)}
+                  >
+                    <img src={horario.icon} alt="" className="time-icon" />
+                    <span>{horario.label}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
         
         <div className="form-group">

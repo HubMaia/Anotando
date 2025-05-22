@@ -47,6 +47,10 @@ cd Anotando
 
 ### 2. Configure o Banco de Dados
 
+Você pode configurar o banco de dados de duas maneiras:
+
+#### Opção 1: Configuração Manual
+
 1. Abra o MySQL Workbench ou o terminal do MySQL
 2. Execute os seguintes comandos:
 
@@ -85,8 +89,28 @@ MODIFY COLUMN horario ENUM(
     'Janta - Antes', 
     'Janta - Depois'
 );
-
 ```
+
+#### Opção 2: Usando o Script de Migração
+
+1. Instale as dependências do backend:
+
+```bash
+cd backend
+npm install
+```
+
+2. Execute o script de migração para criar o banco de dados e as tabelas:
+
+```bash
+node scripts/run-migration.js
+```
+
+Este script irá:
+- Criar o banco de dados `anotandodb` (se não existir)
+- Criar a tabela `usuarios` com todos os campos necessários
+- Criar a tabela `registros` para armazenar as medições
+- Configurar as chaves estrangeiras e índices
 
 ### 3. Configure as Variáveis de Ambiente
 
@@ -101,39 +125,12 @@ DB_NAME=anotandodb
 JWT_SECRET=uma_chave_secreta_qualquer
 ```
 
-### 4. Instale as Dependências
-
-1. Instale as dependências do backend:
-
-```bash
-cd backend
-npm install
-```
-
-Este comando instalará automaticamente todas as dependências necessárias listadas no package.json, incluindo:
-
-- express
-- mysql2
-- cors
-- dotenv
-- bcryptjs
-- jsonwebtoken
-
-2. Instale as dependências do frontend:
+### 4. Instale as Dependências do Frontend
 
 ```bash
 cd ../frontend
 npm install
 ```
-
-Este comando instalará automaticamente todas as dependências necessárias listadas no package.json, incluindo:
-
-- react-router-dom
-- axios
-- @mui/material
-- @emotion/react
-- @emotion/styled
-- @mui/icons-material
 
 ## 🚀 Executando o Projeto
 
@@ -165,7 +162,13 @@ O frontend iniciará na porta 3000 e seu navegador abrirá automaticamente com a
 
    - Acesse http://localhost:3000
    - Clique em "Registrar"
-   - Preencha seus dados
+   - Preencha seus dados:
+     - Nome completo (obrigatório)
+     - Idade (obrigatório)
+     - Diagnóstico (opcional)
+     - Nome do médico (opcional)
+     - Email
+     - Senha
 
 2. **Fazer Login**
 
@@ -207,16 +210,16 @@ O frontend iniciará na porta 3000 e seu navegador abrirá automaticamente com a
 
    - Verifique se o MySQL está rodando
    - Confira as credenciais no arquivo `.env`
-   - Certifique-se que o banco `anotandodb` existe
+   - Execute novamente o script de migração: `node scripts/run-migration.js`
 
 2. **Erro ao iniciar o frontend**
 
    - Verifique se todas as dependências foram instaladas
-   - Tente deletar a pasta `node_modules` e execute `npm install` novamente
+   - Tente remover a pasta `node_modules` e executar `npm install` novamente
 
-3. **Erro ao iniciar o backend**
-   - Verifique se a porta 5000 está disponível
-   - Confira se todas as dependências foram instaladas
+3. **Erro ao registrar usuário**
+   - Verifique se todos os campos obrigatórios foram preenchidos
+   - Confirme se o email não está sendo usado por outro usuário
 
 ## 👥 Contribuição
 

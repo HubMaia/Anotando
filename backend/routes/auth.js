@@ -8,11 +8,20 @@ const router = express.Router();
 // Rota para registrar novo usuário
 router.post('/register', async (req, res) => {
   try {
-    const { nome, email, senha } = req.body;
+    const { 
+      nome, 
+      email, 
+      senha, 
+      idade, 
+      diagnostico, 
+      nome_medico 
+    } = req.body;
     
     // Validar dados recebidos
-    if (!nome || !email || !senha) {
-      return res.status(400).json({ message: 'Todos os campos são obrigatórios' });
+    if (!nome || !email || !senha || !idade) {
+      return res.status(400).json({ 
+        message: 'Nome, email, senha e idade são campos obrigatórios' 
+      });
     }
     
     // Verificar se o email já está cadastrado
@@ -30,8 +39,8 @@ router.post('/register', async (req, res) => {
     
     // Inserir novo usuário no banco
     const [result] = await pool.query(
-      'INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)',
-      [nome, email, hashedPassword]
+      'INSERT INTO usuarios (nome, email, senha, idade, diagnostico, nome_medico) VALUES (?, ?, ?, ?, ?, ?)',
+      [nome, email, hashedPassword, idade, diagnostico || null, nome_medico || null]
     );
     
     res.status(201).json({ 
@@ -87,7 +96,10 @@ router.post('/login', async (req, res) => {
       user: {
         id: user.id,
         nome: user.nome,
-        email: user.email
+        email: user.email,
+        idade: user.idade,
+        diagnostico: user.diagnostico,
+        nome_medico: user.nome_medico
       }
     });
     
@@ -118,7 +130,7 @@ const authMiddleware = (req, res, next) => {
 router.get('/me', authMiddleware, async (req, res) => {
   try {
     const [users] = await pool.query(
-      'SELECT id, nome, email FROM usuarios WHERE id = ?',
+      'SELECT id, nome, email, idade, diagnostico, nome_medico FROM usuarios WHERE id = ?',
       [req.userData.userId]
     );
     
