@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Homepage from './components/Homepage';
 import LoginForm from './components/LoginForm';
@@ -68,7 +68,14 @@ const RegisterPage = () => {
     <div className="register-container">
       <div className="register-card">
         <h2>Criar Conta</h2>
-        <h3>Anotando - Controle de Glicemia</h3>
+        <h3 style={{textAlign: 'center', marginBottom: '2rem'}}>
+          <Link to="/" style={{ color: '#2980b9', textDecoration: 'none', fontWeight: 700, fontSize: '1.2rem' }}>
+            Anotando
+          </Link>
+          <span style={{ color: '#7f8c8d', fontWeight: 400, fontSize: '1rem', marginLeft: 8 }}>
+            - Controle de Glicemia
+          </span>
+        </h3>
         
         {error && <div className="error-message">{error}</div>}
         {success && <div className="success-message">{success}</div>}
@@ -215,14 +222,12 @@ const Dashboard = ({ isAuthenticated, setIsAuthenticated }) => {
 // Componente principal
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       setIsAuthenticated(true);
     }
   }, []);
-  
   return (
     <Router>
       <Routes>
@@ -261,7 +266,7 @@ const App = () => {
         />
         <Route 
           path="/" 
-          element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} 
+          element={<Homepage />} 
         />
       </Routes>
     </Router>
