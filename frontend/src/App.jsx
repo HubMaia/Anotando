@@ -4,6 +4,7 @@ import axios from 'axios';
 import LoginForm from './components/LoginForm';
 import RegistroForm from './components/RegistroForm';
 import Historico from './components/Historico';
+import logo from './assets/images/ANOTANDO-LOGO.png';
 import './App.css';
 
 // Componente para a página de registro de usuário
@@ -174,8 +175,7 @@ const Dashboard = ({ isAuthenticated, setIsAuthenticated }) => {
     <div className="dashboard-container">
       <header className="dashboard-header">
         <div className="app-title">
-          <h1>Anotando</h1>
-          <p>Controle de Glicemia</p>
+          <img src={logo} alt="Anotando Logo" className="app-logo" />
         </div>
         
         {user && (
