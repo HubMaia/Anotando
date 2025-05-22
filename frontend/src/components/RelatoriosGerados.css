@@ -1,0 +1,52 @@
+/* Relatórios Gerados - visual moderno */
+.relatorios-gerados-container {
+  max-width: 800px;
+  margin: 2.5rem auto 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(41,128,185,0.10);
+  padding: 2.5rem 2rem 2rem 2rem;
+}
+.relatorios-gerados-container h2 {
+  color: #2980b9;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.relatorios-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+.relatorios-tabela th, .relatorios-tabela td {
+  padding: 0.8rem 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid #ecf0f1;
+}
+.relatorios-tabela th {
+  background: #f8f9fa;
+  color: #2c3e50;
+  font-weight: 600;
+}
+.relatorios-tabela tr:hover {
+  background: #fafdff;
+}
+.relatorio-btn {
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4rem 1.1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.relatorio-btn:hover {
+  background: #217dbb;
+}
+.no-relatorios {
+  color: #888;
+  text-align: center;
+  margin-top: 2rem;
+}

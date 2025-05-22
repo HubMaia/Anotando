@@ -1,0 +1,103 @@
+/* Homepage visual moderno */
+.homepage-container {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #3498db 0%, #6dd5fa 100%);
+  display: flex;
+  flex-direction: column;
+}
+.homepage-header {
+  text-align: center;
+  padding: 3rem 1rem 2rem 1rem;
+  color: #fff;
+  background: rgba(41,128,185,0.85);
+  box-shadow: 0 2px 16px rgba(41,128,185,0.08);
+}
+.homepage-header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+}
+.homepage-header h2 {
+  font-size: 1.3rem;
+  font-weight: 400;
+  margin-bottom: 1.2rem;
+}
+.homepage-desc {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: #eaf6fb;
+}
+.homepage-login-btn, .homepage-register-btn {
+  display: inline-block;
+  margin: 0 0.5rem;
+  padding: 0.7rem 2.2rem;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(41,128,185,0.08);
+}
+.homepage-login-btn {
+  background: #fff;
+  color: #3498db;
+  border: 2px solid #fff;
+}
+.homepage-login-btn:hover {
+  background: #eaf6fb;
+  color: #217dbb;
+  transform: translateY(-2px) scale(1.04);
+}
+.homepage-register-btn {
+  background: #27ae60;
+  color: #fff;
+  border: 2px solid #27ae60;
+}
+.homepage-register-btn:hover {
+  background: #219653;
+  color: #fff;
+  transform: translateY(-2px) scale(1.04);
+}
+.homepage-main {
+  flex: 1;
+  max-width: 800px;
+  margin: 2rem auto 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(41,128,185,0.10);
+  padding: 2.5rem 2rem 2rem 2rem;
+}
+.homepage-about {
+  margin-bottom: 2.5rem;
+}
+.homepage-about h3 {
+  color: #2980b9;
+  margin-bottom: 0.7rem;
+}
+.homepage-blog h3 {
+  color: #27ae60;
+  margin-bottom: 1.2rem;
+}
+.homepage-blog article {
+  background: #fafdff;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(41,128,185,0.04);
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.2rem;
+}
+.homepage-blog h4 {
+  margin-bottom: 0.3rem;
+  color: #3498db;
+}
+.homepage-footer {
+  text-align: center;
+  color: #eaf6fb;
+  padding: 1.2rem 0 0.5rem 0;
+  font-size: 1rem;
+}
+@media (max-width: 600px) {
+  .homepage-main {
+    padding: 1rem 0.5rem;
+  }
+}
