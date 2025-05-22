@@ -12,7 +12,6 @@ code {
     monospace;
 }
 
-/* Classes de utilidade compartilhadas */
 .error-message {
   background-color: #ffecec;
   color: #e74c3c;
@@ -66,4 +65,4 @@ button {
 
 button:disabled {
   cursor: not-allowed;
-} 
+}

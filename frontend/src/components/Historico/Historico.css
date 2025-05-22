@@ -149,4 +149,19 @@
     width: 100%;
     margin-bottom: 0.5rem;
   }
-} 
+}
+
+@media (max-width: 480px) {
+  .historico-container {
+    padding: 1rem;
+  }
+
+  .historico-container h3 {
+    font-size: 1.5rem;
+  }
+
+  .registros-tabela th,
+  .registros-tabela td {
+    padding: 0.5rem;
+  }
+}
