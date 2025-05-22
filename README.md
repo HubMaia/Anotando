@@ -45,38 +45,7 @@ git clone https://github.com/HubMaia/Anotando.git
 cd Anotando
 ```
 
-### 2. Configure o Banco de Dados
-
-1. Abra o MySQL Workbench ou o terminal do MySQL
-2. Execute os seguintes comandos:
-
-```sql
--- Criar o banco de dados
-CREATE DATABASE anotandodb;
-
--- Usar o banco de dados
-USE anotandodb;
-
--- Criar a tabela de usuários
-CREATE TABLE usuarios (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nome VARCHAR(100),
-  email VARCHAR(100) UNIQUE,
-  senha VARCHAR(255)
-);
-
--- Criar a tabela de registros
-CREATE TABLE registros (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  usuario_id INT,
-  data DATE,
-  horario ENUM('Café - Antes', 'Café - Depois', 'Almoço - Antes', 'Almoço - Depois', 'Janta - Antes', 'Janta - Depois'),
-  valor_glicemia INT,
-  FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-);
-```
-
-### 3. Configure as Variáveis de Ambiente
+### 2. Configure as Variáveis de Ambiente
 
 1. Na raiz do projeto, crie um arquivo chamado `.env`
 2. Adicione as seguintes linhas (substitua com suas informações):
@@ -89,7 +58,7 @@ DB_NAME=anotandodb
 JWT_SECRET=uma_chave_secreta_qualquer
 ```
 
-### 4. Instale as Dependências
+### 3. Configure o Banco de Dados
 
 1. Instale as dependências do backend:
 
@@ -98,30 +67,25 @@ cd backend
 npm install
 ```
 
-Este comando instalará automaticamente todas as dependências necessárias listadas no package.json, incluindo:
+2. Execute o script de migração para criar o banco de dados e as tabelas:
 
-- express
-- mysql2
-- cors
-- dotenv
-- bcryptjs
-- jsonwebtoken
+```bash
+node scripts/run-migration.js
+```
 
-2. Instale as dependências do frontend:
+Este script irá:
+
+- Criar o banco de dados `anotandodb` (se não existir)
+- Criar a tabela `usuarios` com todos os campos necessários
+- Criar a tabela `registros` para armazenar as medições
+- Configurar as chaves estrangeiras e índices
+
+### 4. Instale as Dependências do Frontend
 
 ```bash
 cd ../frontend
 npm install
 ```
-
-Este comando instalará automaticamente todas as dependências necessárias listadas no package.json, incluindo:
-
-- react-router-dom
-- axios
-- @mui/material
-- @emotion/react
-- @emotion/styled
-- @mui/icons-material
 
 ## 🚀 Executando o Projeto
 
@@ -153,7 +117,13 @@ O frontend iniciará na porta 3000 e seu navegador abrirá automaticamente com a
 
    - Acesse http://localhost:3000
    - Clique em "Registrar"
-   - Preencha seus dados
+   - Preencha seus dados:
+     - Nome completo (obrigatório)
+     - Idade (obrigatório)
+     - Diagnóstico (opcional)
+     - Nome do médico (opcional)
+     - Email
+     - Senha
 
 2. **Fazer Login**
 
@@ -195,16 +165,16 @@ O frontend iniciará na porta 3000 e seu navegador abrirá automaticamente com a
 
    - Verifique se o MySQL está rodando
    - Confira as credenciais no arquivo `.env`
-   - Certifique-se que o banco `anotandodb` existe
+   - Execute novamente o script de migração: `node scripts/run-migration.js`
 
 2. **Erro ao iniciar o frontend**
 
    - Verifique se todas as dependências foram instaladas
-   - Tente deletar a pasta `node_modules` e execute `npm install` novamente
+   - Tente remover a pasta `node_modules` e executar `npm install` novamente
 
-3. **Erro ao iniciar o backend**
-   - Verifique se a porta 5000 está disponível
-   - Confira se todas as dependências foram instaladas
+3. **Erro ao registrar usuário**
+   - Verifique se todos os campos obrigatórios foram preenchidos
+   - Confirme se o email não está sendo usado por outro usuário
 
 ## 👥 Contribuição
 
