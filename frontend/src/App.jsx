@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import LoginForm from './components/LoginForm';
 import RegistroForm from './components/RegistroForm';
 import Historico from './components/Historico';
+import UserProfile from './components/UserProfile';
 import logo from './assets/images/ANOTANDO-LOGO.png';
 import './App.css';
 
@@ -181,6 +182,7 @@ const Dashboard = ({ isAuthenticated, setIsAuthenticated }) => {
         {user && (
           <div className="user-info">
             <span>Olá, {user.nome}</span>
+            <Link to="/profile" className="profile-link">Meu Perfil</Link>
             <button onClick={handleLogout} className="logout-button">
               Sair
             </button>
@@ -244,6 +246,16 @@ const App = () => {
               isAuthenticated={isAuthenticated} 
               setIsAuthenticated={setIsAuthenticated} 
             />
+          } 
+        />
+        <Route 
+          path="/profile" 
+          element={
+            isAuthenticated ? (
+              <UserProfile setIsAuthenticated={setIsAuthenticated} />
+            ) : (
+              <Navigate to="/login" />
+            )
           } 
         />
         <Route 
