@@ -47,52 +47,6 @@ cd Anotando
 
 ### 2. Configure o Banco de Dados
 
-Você pode configurar o banco de dados de duas maneiras:
-
-#### Opção 1: Configuração Manual
-
-1. Abra o MySQL Workbench ou o terminal do MySQL
-2. Execute os seguintes comandos:
-
-```sql
--- Criar o banco de dados
-CREATE DATABASE anotandodb;
-
--- Usar o banco de dados
-USE anotandodb;
-
--- Criar a tabela de usuários
-CREATE TABLE usuarios (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nome VARCHAR(100),
-  email VARCHAR(100) UNIQUE,
-  senha VARCHAR(255)
-);
-
--- Criar a tabela de registros
-CREATE TABLE registros (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  usuario_id INT,
-  data DATE,
-  horario ENUM('Café - Antes', 'Café - Depois', 'Almoço - Antes', 'Almoço - Depois', 'Janta - Antes', 'Janta - Depois'),
-  valor_glicemia INT,
-  FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-);
-
--- Se o banco não funcionar, teste fazer essa atualização
- ALTER TABLE registros 
-MODIFY COLUMN horario ENUM(
-    'Cafe - Antes', 
-    'Cafe - Depois', 
-    'Almoco - Antes', 
-    'Almoco - Depois', 
-    'Janta - Antes', 
-    'Janta - Depois'
-);
-```
-
-#### Opção 2: Usando o Script de Migração
-
 1. Instale as dependências do backend:
 
 ```bash
@@ -185,6 +139,11 @@ O frontend iniciará na porta 3000 e seu navegador abrirá automaticamente com a
 4. **Ver Histórico**
    - Na página inicial, você verá seu histórico de medições
    - Use os filtros para buscar por período
+
+5. **Gerenciar Perfil**
+   - Acesse "Meu Perfil" no menu superior
+   - Visualize e edite suas informações
+   - Opção para excluir sua conta
 
 ## 🛠️ Tecnologias Utilizadas
 
