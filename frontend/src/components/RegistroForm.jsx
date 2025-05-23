@@ -15,6 +15,7 @@ const RegistroForm = ({ onRegistroAdded }) => {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [glicemiaWarning, setGlicemiaWarning] = useState('');
   const dropdownRef = useRef(null);
 
   const horarios = [
@@ -40,9 +41,24 @@ const RegistroForm = ({ onRegistroAdded }) => {
   }, []);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+    
+    if (name === 'valor_glicemia') {
+      const valor = parseInt(value);
+      if (valor > 600) {
+        setError('O valor glicêmico não pode ser maior que 600 mg/dL');
+        return;
+      }
+      if (valor >= 300) {
+        setGlicemiaWarning('Atenção: Valor glicêmico muito alto. Recomendamos procurar ajuda médica.');
+      } else {
+        setGlicemiaWarning('');
+      }
+    }
+    
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
     setError('');
     setSuccess('');
@@ -180,9 +196,15 @@ const RegistroForm = ({ onRegistroAdded }) => {
             value={formData.valor_glicemia}
             onChange={handleChange}
             min="0"
+            max="600"
             required
             placeholder="Ex: 120"
           />
+          {glicemiaWarning && (
+            <div className="warning-message">
+              {glicemiaWarning}
+            </div>
+          )}
         </div>
         
         <button 
