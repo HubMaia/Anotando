@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import cafeImage from '../assets/images/CAFE-DA-MANHA.png';
+import cafeTardeImage from '../assets/images/CAFE-DA-TARDE.png';
+import almocoImage from '../assets/images/ALMOÇO.png';
+import jantaImage from '../assets/images/JANTA.png';
 import './Historico.css';
 
 const Historico = () => {
@@ -10,10 +14,17 @@ const Historico = () => {
     dataInicio: '',
     dataFim: ''
   });
+  const [selectedDescription, setSelectedDescription] = useState(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // Carregar registros ao montar o componente
   useEffect(() => {
     carregarRegistros();
+    // Remove a classe de animação após 1 segundo
+    const timer = setTimeout(() => {
+      setIsInitialLoad(false);
+    }, 1000);
+    return () => clearTimeout(timer);
   }, []);
 
   const carregarRegistros = async () => {
@@ -150,9 +161,43 @@ const Historico = () => {
     }
   };
 
+  const truncateText = (text, maxLength = 50) => {
+    if (!text) return '-';
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
+
+  const handleDescriptionClick = (description) => {
+    setSelectedDescription(description);
+  };
+
+  const closeModal = () => {
+    setSelectedDescription(null);
+  };
+
+  const getMealImage = (horario) => {
+    if (horario.includes('Cafe-Tarde')) {
+      return cafeTardeImage;
+    } else if (horario.includes('Cafe')) {
+      return cafeImage;
+    } else if (horario.includes('Almoco')) {
+      return almocoImage;
+    } else if (horario.includes('Janta')) {
+      return jantaImage;
+    }
+    return null;
+  };
+
   return (
     <div className="historico-container">
       <h3>Histórico de Registros</h3>
+      
+      <div className={`meal-carousel ${isInitialLoad ? 'initial-load' : ''}`}>
+        <img src={cafeImage} alt="Café da Manhã" className="meal-image" />
+        <img src={almocoImage} alt="Almoço" className="meal-image" />
+        <img src={cafeTardeImage} alt="Café da Tarde" className="meal-image" />
+        <img src={jantaImage} alt="Janta" className="meal-image" />
+      </div>
       
       <div className="filtro-container">
         <form onSubmit={aplicarFiltro}>
@@ -211,6 +256,7 @@ const Historico = () => {
                 <th>Data</th>
                 <th>Horário</th>
                 <th>Glicemia (mg/dL)</th>
+                <th>Descrição da Refeição</th>
                 <th>Ações</th>
               </tr>
             </thead>
@@ -221,6 +267,16 @@ const Historico = () => {
                   <td>{registro.horario}</td>
                   <td className={`valor-glicemia ${getStatusGlicemia(registro.valor_glicemia, registro.horario)}`}>
                     {registro.valor_glicemia}
+                  </td>
+                  <td className="description-cell">
+                    {registro.descricao_refeicao ? (
+                      <span 
+                        className="description-content"
+                        onClick={() => handleDescriptionClick(registro.descricao_refeicao)}
+                      >
+                        {truncateText(registro.descricao_refeicao)}
+                      </span>
+                    ) : '-'}
                   </td>
                   <td>
                     <button 
@@ -234,6 +290,29 @@ const Historico = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {selectedDescription && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <button className="close-button" onClick={closeModal}>&times;</button>
+            </div>
+            <div className="modal-image-container">
+              <img 
+                src={getMealImage(registros.find(r => r.descricao_refeicao === selectedDescription)?.horario)} 
+                alt="Ícone da refeição" 
+                className="modal-icon"
+              />
+            </div>
+            <div className="modal-title">
+              <h4>Nessa hora eu comi...</h4>
+            </div>
+            <div className="modal-body">
+              {selectedDescription}
+            </div>
+          </div>
         </div>
       )}
     </div>

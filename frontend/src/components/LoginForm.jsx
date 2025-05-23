@@ -42,11 +42,21 @@ const LoginForm = ({ setIsAuthenticated }) => {
           setLoading(false);
           return;
         }
+
+        // Validar idade
+        const idadeNum = parseInt(idade, 10);
+        if (isNaN(idadeNum) || idadeNum < 0 || idadeNum > 200) {
+          setError('Por favor, insira uma idade válida entre 0 e 200 anos');
+          setMessageType('error');
+          setLoading(false);
+          return;
+        }
+
         await axios.post('http://localhost:5000/api/auth/register', {
           nome,
           email,
           senha,
-          idade,
+          idade: idadeNum,
           diagnostico,
           nome_medico
         });
@@ -118,6 +128,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
                   required={isRegister}
                   placeholder="Sua idade"
                   min="0"
+                  max="200"
                 />
               </div>
               <div className="form-group">
@@ -145,7 +156,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
             </>
           )}
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Email <span style={{color:'#e74c3c'}}>*</span></label>
             <input
               type="email"
               id="email"
@@ -158,7 +169,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
           </div>
           
           <div className="form-group">
-            <label htmlFor="senha">Senha</label>
+            <label htmlFor="senha">Senha <span style={{color:'#e74c3c'}}>*</span></label>
             <input
               type="password"
               id="senha"

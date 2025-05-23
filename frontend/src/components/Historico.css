@@ -8,9 +8,45 @@
 .historico-container h3 {
   color: #2c3e50;
   margin-top: 0;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   border-bottom: 1px solid #ecf0f1;
   padding-bottom: 0.75rem;
+}
+
+.meal-carousel {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.meal-carousel.initial-load {
+  animation: slideIn 0.5s ease-out;
+}
+
+.meal-image {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.meal-image:hover {
+  transform: scale(1.1);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 .filtro-container {
@@ -136,6 +172,101 @@
   padding: 2rem;
   color: #7f8c8d;
   font-style: italic;
+}
+
+.description-cell {
+  max-width: 200px;
+}
+
+.description-content {
+  cursor: pointer;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+  max-height: 2.8em;
+}
+
+.description-content:hover {
+  opacity: 0.8;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.modal-image-container {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  background-color: #f8f9fa;
+}
+
+.modal-icon {
+  width: 144px;
+  height: 144px;
+  object-fit: contain;
+}
+
+.modal-title {
+  text-align: center;
+  padding: 1rem;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.modal-title h4 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.25rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  color: #2c3e50;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #7f8c8d;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.close-button:hover {
+  color: #34495e;
 }
 
 @media (max-width: 768px) {

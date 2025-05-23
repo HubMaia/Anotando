@@ -65,8 +65,8 @@ const UserProfile = ({ setIsAuthenticated }) => {
 
       // Validar idade
       const idade = parseInt(formData.idade, 10);
-      if (isNaN(idade) || idade < 0) {
-        setError('Por favor, insira uma idade válida');
+      if (isNaN(idade) || idade < 0 || idade > 200) {
+        setError('Por favor, insira uma idade válida entre 0 e 200 anos');
         setLoading(false);
         return;
       }
@@ -224,6 +224,7 @@ const UserProfile = ({ setIsAuthenticated }) => {
               onChange={handleChange}
               required
               min="0"
+              max="200"
             />
           </div>
 
@@ -291,7 +292,7 @@ const UserProfile = ({ setIsAuthenticated }) => {
                 onClick={handleDeleteAccount}
                 disabled={loading}
               >
-                {loading ? 'Excluindo...' : 'Sim, Excluir Conta'}
+                {loading ? 'Excluindo...' : 'Excluir Conta'}
               </button>
               <button 
                 className="cancel-delete-button"

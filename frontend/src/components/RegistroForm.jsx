@@ -9,7 +9,8 @@ const RegistroForm = ({ onRegistroAdded }) => {
   const [formData, setFormData] = useState({
     data: new Date().toISOString().split('T')[0], // Data atual como padrão
     horario: '',
-    valor_glicemia: ''
+    valor_glicemia: '',
+    descricao_refeicao: ''
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -23,6 +24,8 @@ const RegistroForm = ({ onRegistroAdded }) => {
     { value: 'Cafe - Depois', label: 'Café - Depois', icon: solImage },
     { value: 'Almoco - Antes', label: 'Almoço - Antes', icon: solImage },
     { value: 'Almoco - Depois', label: 'Almoço - Depois', icon: solImage },
+    { value: 'Cafe-Tarde - Antes', label: 'Café da Tarde - Antes', icon: solImage },
+    { value: 'Cafe-Tarde - Depois', label: 'Café da Tarde - Depois', icon: solImage },
     { value: 'Janta - Antes', label: 'Janta - Antes', icon: luaImage },
     { value: 'Janta - Depois', label: 'Janta - Depois', icon: luaImage }
   ];
@@ -42,6 +45,17 @@ const RegistroForm = ({ onRegistroAdded }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    if (name === 'data') {
+      const selectedDate = new Date(value);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Reset time to start of day
+      
+      if (selectedDate > today) {
+        setError('Não é possível registrar glicemia para datas futuras');
+        return;
+      }
+    }
     
     if (name === 'valor_glicemia') {
       const valor = parseInt(value);
@@ -112,7 +126,8 @@ const RegistroForm = ({ onRegistroAdded }) => {
       setFormData({
         data: formData.data,
         horario: '',
-        valor_glicemia: ''
+        valor_glicemia: '',
+        descricao_refeicao: ''
       });
       
       // Notificar o componente pai (para atualizar a lista de registros)
@@ -150,6 +165,7 @@ const RegistroForm = ({ onRegistroAdded }) => {
             name="data"
             value={formData.data}
             onChange={handleChange}
+            max={new Date().toISOString().split('T')[0]}
             required
           />
         </div>
@@ -205,6 +221,18 @@ const RegistroForm = ({ onRegistroAdded }) => {
               {glicemiaWarning}
             </div>
           )}
+        </div>
+        
+        <div className="form-group">
+          <label htmlFor="descricao_refeicao">Quer anotar o que comeu?</label>
+          <textarea
+            id="descricao_refeicao"
+            name="descricao_refeicao"
+            value={formData.descricao_refeicao}
+            onChange={handleChange}
+            placeholder="Escreva aqui sua refeição"
+            rows="3"
+          />
         </div>
         
         <button 

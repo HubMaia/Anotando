@@ -49,7 +49,7 @@ router.get('/:id', async (req, res) => {
 // Criar novo registro
 router.post('/', async (req, res) => {
   try {
-    const { data, horario, valor_glicemia } = req.body;
+    const { data, horario, valor_glicemia, descricao_refeicao } = req.body;
     const userId = req.userData.userId;
     
     // Validar dados
@@ -61,6 +61,8 @@ router.post('/', async (req, res) => {
     const horariosPermitidos = [
       'Cafe - Antes', 
       'Cafe - Depois', 
+      'Cafe-Tarde - Antes',
+      'Cafe-Tarde - Depois',
       'Almoco - Antes', 
       'Almoco - Depois', 
       'Janta - Antes', 
@@ -75,8 +77,8 @@ router.post('/', async (req, res) => {
     
     // Inserir registro
     const [result] = await pool.query(
-      'INSERT INTO registros (usuario_id, data, horario, valor_glicemia) VALUES (?, ?, ?, ?)',
-      [userId, data, horario, valor_glicemia]
+      'INSERT INTO registros (usuario_id, data, horario, valor_glicemia, descricao_refeicao) VALUES (?, ?, ?, ?, ?)',
+      [userId, data, horario, valor_glicemia, descricao_refeicao || null]
     );
     
     res.status(201).json({
@@ -94,11 +96,29 @@ router.put('/:id', async (req, res) => {
   try {
     const registroId = req.params.id;
     const userId = req.userData.userId;
-    const { data, horario, valor_glicemia } = req.body;
+    const { data, horario, valor_glicemia, descricao_refeicao } = req.body;
     
     // Validar dados
     if (!data || !horario || !valor_glicemia) {
       return res.status(400).json({ message: 'Todos os campos são obrigatórios' });
+    }
+    
+    // Validar o horário (deve ser um dos valores permitidos)
+    const horariosPermitidos = [
+      'Cafe - Antes', 
+      'Cafe - Depois', 
+      'Cafe-Tarde - Antes',
+      'Cafe-Tarde - Depois',
+      'Almoco - Antes', 
+      'Almoco - Depois', 
+      'Janta - Antes', 
+      'Janta - Depois'
+    ];
+    
+    if (!horariosPermitidos.includes(horario)) {
+      return res.status(400).json({ 
+        message: 'Horário inválido. Deve ser um dos seguintes valores: ' + horariosPermitidos.join(', ')
+      });
     }
     
     // Verificar se o registro pertence ao usuário
@@ -113,8 +133,8 @@ router.put('/:id', async (req, res) => {
     
     // Atualizar registro
     await pool.query(
-      'UPDATE registros SET data = ?, horario = ?, valor_glicemia = ? WHERE id = ? AND usuario_id = ?',
-      [data, horario, valor_glicemia, registroId, userId]
+      'UPDATE registros SET data = ?, horario = ?, valor_glicemia = ?, descricao_refeicao = ? WHERE id = ? AND usuario_id = ?',
+      [data, horario, valor_glicemia, descricao_refeicao || null, registroId, userId]
     );
     
     res.status(200).json({ message: 'Registro atualizado com sucesso' });
