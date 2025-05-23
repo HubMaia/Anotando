@@ -15,16 +15,10 @@ const Historico = () => {
     dataFim: ''
   });
   const [selectedDescription, setSelectedDescription] = useState(null);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // Carregar registros ao montar o componente
   useEffect(() => {
     carregarRegistros();
-    // Remove a classe de animação após 1 segundo
-    const timer = setTimeout(() => {
-      setIsInitialLoad(false);
-    }, 1000);
-    return () => clearTimeout(timer);
   }, []);
 
   const carregarRegistros = async () => {
@@ -192,7 +186,7 @@ const Historico = () => {
     <div className="historico-container">
       <h3>Histórico de Registros</h3>
       
-      <div className={`meal-carousel ${isInitialLoad ? 'initial-load' : ''}`}>
+      <div className="meal-carousel">
         <img src={cafeImage} alt="Café da Manhã" className="meal-image" />
         <img src={almocoImage} alt="Almoço" className="meal-image" />
         <img src={cafeTardeImage} alt="Café da Tarde" className="meal-image" />

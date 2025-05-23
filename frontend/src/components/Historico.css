@@ -23,10 +23,6 @@
   border-radius: 8px;
 }
 
-.meal-carousel.initial-load {
-  animation: slideIn 0.5s ease-out;
-}
-
 .meal-image {
   width: 80px;
   height: 80px;
@@ -36,17 +32,6 @@
 
 .meal-image:hover {
   transform: scale(1.1);
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
 }
 
 .filtro-container {
