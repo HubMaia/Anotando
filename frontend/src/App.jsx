@@ -5,6 +5,7 @@ import LoginForm from './components/LoginForm';
 import RegistroForm from './components/RegistroForm';
 import Historico from './components/Historico';
 import UserProfile from './components/UserProfile';
+import Header from './components/header';
 import logo from './assets/images/ANOTANDO-LOGO.png';
 import './App.css';
 
@@ -174,21 +175,7 @@ const Dashboard = ({ isAuthenticated, setIsAuthenticated }) => {
   
   return (
     <div className="dashboard-container">
-      <header className="dashboard-header">
-        <div className="app-title">
-          <img src={logo} alt="Anotando Logo" className="app-logo" />
-        </div>
-        
-        {user && (
-          <div className="user-info">
-            <span>Olá, {user.nome}</span>
-            <Link to="/profile" className="profile-link">Meu Perfil</Link>
-            <button onClick={handleLogout} className="logout-button">
-              Sair
-            </button>
-          </div>
-        )}
-      </header>
+      <Header user={user} onLogout={handleLogout} />
       
       <main className="dashboard-content">
         <div className="dashboard-grid">

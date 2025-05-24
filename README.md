@@ -26,7 +26,7 @@ Anotando é um aplicativo web desenvolvido para ajudar pessoas com diabetes a re
 
 ## Estrutura do Projeto
 
-```
+````
 anotando/
 ├── frontend/           # Aplicação React
 │   ├── src/
@@ -39,7 +39,7 @@ anotando/
     ├── migrations/    # Scripts SQL
     ├── src/          # Código fonte
     └── package.json  # Dependências do backend
-```
+     ```
 
 ## Instalação e Execução
 
@@ -53,48 +53,58 @@ anotando/
 
 1. Instale o MySQL em sua máquina
 2. Crie um banco de dados chamado `anotandodb`:
-   ```sql
-   CREATE DATABASE anotandodb;
-   ```
+```sql
+CREATE DATABASE anotandodb;
+````
+
 3. Configure as variáveis de ambiente no arquivo `.env` do backend:
-   ```
-   DB_HOST=localhost
+
+```
+DB_HOST=localhost
    DB_PORT=3306
-   DB_USER=root
+DB_USER=root
    DB_PASSWORD=sua_senha
-   DB_NAME=anotandodb
+DB_NAME=anotandodb
    JWT_SECRET=sua_chave_secreta
-   ```
+```
 
 ### Backend
 
 1. Navegue até a pasta do backend:
-   ```bash
-   cd backend
-   ```
+
+```bash
+cd backend
+```
+
 2. Instale as dependências:
    ```bash
    npm install
    ```
+
+````
 3. Execute as migrações do banco de dados em ordem:
-   ```bash
+```bash
    # Execute cada arquivo de migração na ordem:
    mysql -u root -p anotandodb < migrations/initial_setup.sql
    mysql -u root -p anotandodb < migrations/add_descricao_refeicao.sql
    mysql -u root -p anotandodb < migrations/update_horario_enum.sql
    mysql -u root -p anotandodb < migrations/add_age_validation.sql
-   ```
+````
+
 4. Inicie o servidor:
-   ```bash
-   npm start
-   ```
+
+```bash
+npm start
+```
 
 ### Frontend
 
 1. Navegue até a pasta do frontend:
-   ```bash
-   cd frontend
-   ```
+
+```bash
+cd frontend
+```
+
 2. Instale as dependências:
    ```bash
    npm install
@@ -103,6 +113,8 @@ anotando/
    ```bash
    npm start
    ```
+
+```
 
 ## Uso
 
@@ -145,3 +157,4 @@ anotando/
 ## Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+```
