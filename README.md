@@ -20,7 +20,7 @@ Anotando é um aplicativo web desenvolvido para ajudar pessoas com diabetes a re
 
 - Frontend: React.js
 - Backend: Node.js com Express
-- Banco de Dados: PostgreSQL
+- Banco de Dados: MySQL
 - Autenticação: JWT (JSON Web Tokens)
 - Estilização: CSS puro
 
@@ -46,18 +46,21 @@ anotando/
 ### Pré-requisitos
 
 - Node.js (versão 14 ou superior)
-- PostgreSQL
+- MySQL
 - NPM ou Yarn
 
 ### Configuração do Banco de Dados
 
-1. Instale o PostgreSQL em sua máquina
-2. Crie um banco de dados chamado `anotandodb`
+1. Instale o MySQL em sua máquina
+2. Crie um banco de dados chamado `anotandodb`:
+   ```sql
+   CREATE DATABASE anotandodb;
+   ```
 3. Configure as variáveis de ambiente no arquivo `.env` do backend:
    ```
    DB_HOST=localhost
-   DB_PORT=5432
-   DB_USER=seu_usuario
+   DB_PORT=3306
+   DB_USER=root
    DB_PASSWORD=sua_senha
    DB_NAME=anotandodb
    JWT_SECRET=sua_chave_secreta
@@ -76,10 +79,10 @@ anotando/
 3. Execute as migrações do banco de dados em ordem:
    ```bash
    # Execute cada arquivo de migração na ordem:
-   psql -U seu_usuario -d anotandodb -f migrations/initial_setup.sql
-   psql -U seu_usuario -d anotandodb -f migrations/add_descricao_refeicao.sql
-   psql -U seu_usuario -d anotandodb -f migrations/update_horario_enum.sql
-   psql -U seu_usuario -d anotandodb -f migrations/add_age_validation.sql
+   mysql -u root -p anotandodb < migrations/initial_setup.sql
+   mysql -u root -p anotandodb < migrations/add_descricao_refeicao.sql
+   mysql -u root -p anotandodb < migrations/update_horario_enum.sql
+   mysql -u root -p anotandodb < migrations/add_age_validation.sql
    ```
 4. Inicie o servidor:
    ```bash
@@ -116,13 +119,13 @@ anotando/
 
 1. **Erro de conexão com o banco de dados**
 
-   - Verifique se o PostgreSQL está rodando
+   - Verifique se o MySQL está rodando
    - Confira as credenciais no arquivo `.env`
    - Certifique-se de que o banco de dados `anotandodb` existe
 
 2. **Erro ao executar migrações**
 
-   - Verifique se você tem permissões de administrador no PostgreSQL
+   - Verifique se você tem permissões de administrador no MySQL
    - Execute as migrações na ordem correta
    - Verifique se o banco de dados existe antes de executar as migrações
 

@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS registros (
   id INT AUTO_INCREMENT PRIMARY KEY,
   usuario_id INT NOT NULL,
   data DATE NOT NULL,
-  horario ENUM('Cafe - Antes', 'Cafe - Depois', 'Almoco - Antes', 'Almoco - Depois', 'Janta - Antes', 'Janta - Depois') NOT NULL,
+  horario ENUM('Cafe - Antes', 'Cafe - Depois', 'Cafe-Tarde - Antes', 'Cafe-Tarde - Depois', 'Almoco - Antes', 'Almoco - Depois', 'Janta - Antes', 'Janta - Depois') NOT NULL,
   valor_glicemia INT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
