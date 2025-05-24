@@ -61,5 +61,4 @@ const RelatoriosGerados = () => {
     </div>
   );
 };
-
 export default RelatoriosGerados;
