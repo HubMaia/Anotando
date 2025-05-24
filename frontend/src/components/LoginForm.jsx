@@ -74,10 +74,10 @@ const LoginForm = ({ setIsAuthenticated }) => {
           email: formData.email,
           senha: formData.senha
         });
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        setIsAuthenticated(true);
-        navigate('/dashboard');
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      setIsAuthenticated(true);
+      navigate('/dashboard');
       }
     } catch (error) {
       setError(
@@ -203,13 +203,13 @@ const LoginForm = ({ setIsAuthenticated }) => {
             </>
           ) : (
             <>
-              <p>Não tem uma conta?</p>
-              <button 
-                className="register-button" 
+          <p>Não tem uma conta?</p>
+          <button 
+            className="register-button" 
                 onClick={() => { setIsRegister(true); setError(''); }}
-              >
-                Cadastre-se
-              </button>
+          >
+            Cadastre-se
+          </button>
             </>
           )}
         </div>

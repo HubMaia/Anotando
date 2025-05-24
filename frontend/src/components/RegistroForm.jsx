@@ -150,7 +150,7 @@ const RegistroForm = ({ onRegistroAdded }) => {
     <div className="registro-form-container">
       <div className="registro-header">
         <img src={novoRegistroImage} alt="Novo Registro" className="novo-registro-image" />
-        <h3>Novo Registro</h3>
+      <h3>Novo Registro</h3>
       </div>
       
       {error && <div className="error-message">{error}</div>}
@@ -188,7 +188,7 @@ const RegistroForm = ({ onRegistroAdded }) => {
             </div>
             {isDropdownOpen && (
               <div className="select-items">
-                {horarios.map(horario => (
+            {horarios.map(horario => (
                   <div
                     key={horario.value}
                     className="select-item"
@@ -197,7 +197,7 @@ const RegistroForm = ({ onRegistroAdded }) => {
                     <img src={horario.icon} alt="" className="time-icon" />
                     <span>{horario.label}</span>
                   </div>
-                ))}
+            ))}
               </div>
             )}
           </div>

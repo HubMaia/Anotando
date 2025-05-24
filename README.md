@@ -1,197 +1,144 @@
-# Anotando - Sistema de Controle de Glicemia
+# Anotando - Aplicativo de Registro de Glicemia
 
-Um sistema web para controle e monitoramento de glicemia, desenvolvido com React, Node.js e MySQL.
+## Sobre o Projeto
 
-## 📋 Pré-requisitos
+Anotando é um aplicativo web desenvolvido para ajudar pessoas com diabetes a registrar e monitorar seus níveis de glicemia. O aplicativo permite registrar medições de glicemia em diferentes horários do dia, incluindo descrições detalhadas das refeições.
 
-Antes de começar, você precisará ter instalado em sua máquina:
+## Funcionalidades
 
-1. **Node.js e NPM**
+- Registro de medições de glicemia com data e horário
+- Categorização automática dos níveis de glicemia (hipoglicemia, normal, pré-diabetes, diabetes)
+- Registro detalhado das refeições com descrições
+- Visualização do histórico de registros
+- Filtro de registros por período
+- Interface intuitiva com ícones para cada tipo de refeição
+- Modal para visualização detalhada das descrições das refeições
+- Sistema de autenticação de usuários
+- Validação de idade (maior de 18 anos)
 
-   - Acesse [nodejs.org](https://nodejs.org)
-   - Baixe e instale a versão LTS (Long Term Support)
-   - Para verificar se a instalação foi bem-sucedida, abra o terminal e digite:
-     ```bash
-     node --version
-     npm --version
-     ```
+## Tecnologias Utilizadas
 
-2. **MySQL**
+- Frontend: React.js
+- Backend: Node.js com Express
+- Banco de Dados: PostgreSQL
+- Autenticação: JWT (JSON Web Tokens)
+- Estilização: CSS puro
 
-   - Acesse [mysql.com](https://mysql.com)
-   - Baixe e instale o MySQL Community Server
-   - Durante a instalação, anote a senha do usuário root
-   - Para verificar se a instalação foi bem-sucedida, abra o terminal e digite:
-     ```bash
-     mysql --version
-     ```
-
-3. **Git**
-   - Acesse [git-scm.com](https://git-scm.com)
-   - Baixe e instale o Git para seu sistema operacional
-   - Para verificar se a instalação foi bem-sucedida, abra o terminal e digite:
-     ```bash
-     git --version
-     ```
-
-## 🔧 Configuração do Ambiente
-
-### 1. Clone o Repositório
-
-Abra o terminal e execute:
-
-```bash
-git clone https://github.com/HubMaia/Anotando.git
-cd Anotando
-```
-
-### 2. Configure o Banco de Dados
-
-1. Instale as dependências do backend:
-
-```bash
-cd backend
-npm install
-```
-
-2. Execute o script de migração para criar o banco de dados e as tabelas:
-
-```bash
-node scripts/run-migration.js
-```
-
-Este script irá:
-- Criar o banco de dados `anotandodb` (se não existir)
-- Criar a tabela `usuarios` com todos os campos necessários
-- Criar a tabela `registros` para armazenar as medições
-- Configurar as chaves estrangeiras e índices
-
-### 3. Configure as Variáveis de Ambiente
-
-1. Na raiz do projeto, crie um arquivo chamado `.env`
-2. Adicione as seguintes linhas (substitua com suas informações):
+## Estrutura do Projeto
 
 ```
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=sua_senha_do_mysql
-DB_NAME=anotandodb
-JWT_SECRET=uma_chave_secreta_qualquer
+anotando/
+├── frontend/           # Aplicação React
+│   ├── src/
+│   │   ├── components/ # Componentes React
+│   │   ├── assets/     # Imagens e recursos
+│   │   └── App.js      # Componente principal
+│   └── package.json    # Dependências do frontend
+│
+└── backend/           # API Node.js
+    ├── migrations/    # Scripts SQL
+    ├── src/          # Código fonte
+    └── package.json  # Dependências do backend
 ```
 
-### 4. Instale as Dependências do Frontend
+## Instalação e Execução
 
-```bash
-cd ../frontend
-npm install
-```
+### Pré-requisitos
 
-## 🚀 Executando o Projeto
+- Node.js (versão 14 ou superior)
+- PostgreSQL
+- NPM ou Yarn
 
-### 1. Inicie o Backend
+### Configuração do Banco de Dados
 
-Em um terminal, na pasta do projeto:
-
-```bash
-cd backend
-npm start
-```
-
-O servidor backend iniciará na porta 5000. Você verá uma mensagem indicando que o servidor está rodando.
-
-### 2. Inicie o Frontend
-
-Em outro terminal, na pasta do projeto:
-
-```bash
-cd frontend
-npm start
-```
-
-O frontend iniciará na porta 3000 e seu navegador abrirá automaticamente com a aplicação.
-
-## 📱 Usando a Aplicação
-
-1. **Criar uma Conta**
-
-   - Acesse http://localhost:3000
-   - Clique em "Registrar"
-   - Preencha seus dados:
-     - Nome completo (obrigatório)
-     - Idade (obrigatório)
-     - Diagnóstico (opcional)
-     - Nome do médico (opcional)
-     - Email
-     - Senha
-
-2. **Fazer Login**
-
-   - Use seu email e senha para acessar
-
-3. **Registrar Medições**
-
-   - Após o login, você verá o formulário de registro
-   - Selecione a data
-   - Escolha o horário da refeição
-   - Digite o valor da glicemia
-   - Clique em "Salvar"
-
-4. **Ver Histórico**
-   - Na página inicial, você verá seu histórico de medições
-   - Use os filtros para buscar por período
-
-5. **Gerenciar Perfil**
-   - Acesse "Meu Perfil" no menu superior
-   - Visualize e edite suas informações
-   - Opção para excluir sua conta
-
-## 🛠️ Tecnologias Utilizadas
-
-### Frontend
-
-- React.js - Biblioteca JavaScript para construção de interfaces
-- Material-UI - Biblioteca de componentes visuais
-- React Router DOM - Gerenciamento de rotas
-- Axios - Cliente HTTP para requisições
+1. Instale o PostgreSQL em sua máquina
+2. Crie um banco de dados chamado `anotandodb`
+3. Configure as variáveis de ambiente no arquivo `.env` do backend:
+   ```
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_USER=seu_usuario
+   DB_PASSWORD=sua_senha
+   DB_NAME=anotandodb
+   JWT_SECRET=sua_chave_secreta
+   ```
 
 ### Backend
 
-- Node.js - Ambiente de execução JavaScript
-- Express - Framework web
-- MySQL - Banco de dados
-- JWT - Autenticação via tokens
+1. Navegue até a pasta do backend:
+   ```bash
+   cd backend
+   ```
+2. Instale as dependências:
+   ```bash
+   npm install
+   ```
+3. Execute as migrações do banco de dados em ordem:
+   ```bash
+   # Execute cada arquivo de migração na ordem:
+   psql -U seu_usuario -d anotandodb -f migrations/initial_setup.sql
+   psql -U seu_usuario -d anotandodb -f migrations/add_descricao_refeicao.sql
+   psql -U seu_usuario -d anotandodb -f migrations/update_horario_enum.sql
+   psql -U seu_usuario -d anotandodb -f migrations/add_age_validation.sql
+   ```
+4. Inicie o servidor:
+   ```bash
+   npm start
+   ```
 
-## ❓ Solução de Problemas
+### Frontend
+
+1. Navegue até a pasta do frontend:
+   ```bash
+   cd frontend
+   ```
+2. Instale as dependências:
+   ```bash
+   npm install
+   ```
+3. Inicie a aplicação:
+   ```bash
+   npm start
+   ```
+
+## Uso
+
+1. Acesse a aplicação em `http://localhost:3000`
+2. Faça login ou registre-se (lembre-se que é necessário ter 18 anos ou mais)
+3. Use o formulário para registrar suas medições de glicemia
+4. Visualize seu histórico na página de histórico
+5. Use os filtros para buscar registros específicos
+6. Clique nas descrições das refeições para ver detalhes completos
+
+## Solução de Problemas
 
 ### Problemas Comuns
 
 1. **Erro de conexão com o banco de dados**
 
-   - Verifique se o MySQL está rodando
+   - Verifique se o PostgreSQL está rodando
    - Confira as credenciais no arquivo `.env`
-   - Execute novamente o script de migração: `node scripts/run-migration.js`
+   - Certifique-se de que o banco de dados `anotandodb` existe
 
-2. **Erro ao iniciar o frontend**
+2. **Erro ao executar migrações**
 
-   - Verifique se todas as dependências foram instaladas
-   - Tente remover a pasta `node_modules` e executar `npm install` novamente
+   - Verifique se você tem permissões de administrador no PostgreSQL
+   - Execute as migrações na ordem correta
+   - Verifique se o banco de dados existe antes de executar as migrações
 
 3. **Erro ao registrar usuário**
    - Verifique se todos os campos obrigatórios foram preenchidos
-   - Confirme se o email não está sendo usado por outro usuário
+   - Confirme se a idade é maior ou igual a 18 anos
+   - Verifique se o email não está sendo usado por outro usuário
 
-## 👥 Contribuição
+## Contribuição
 
-1. Faça um Fork do projeto
-2. Crie uma Branch para sua Feature (`git checkout -b feature/AmazingFeature`)
-3. Faça o Commit de suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Faça o Push para a Branch (`git push origin feature/AmazingFeature`)
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
+4. Push para a branch (`git push origin feature/nova-feature`)
 5. Abra um Pull Request
 
-## 📄 Licença
+## Licença
 
-Este projeto está sob a licença MIT.
-
-## 📞 Suporte
-
-Para suporte, envie um email para [tecmaia7@gmail.com] ou abra uma issue no GitHub.
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
