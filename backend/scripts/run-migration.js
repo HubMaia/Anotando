@@ -18,7 +18,7 @@ async function runMigration() {
     console.log('Conectado ao MySQL');
 
     // Ler o arquivo de migração
-    const migrationPath = path.join(__dirname, '../migrations/initial_setup.sql');
+    const migrationPath = path.join(__dirname, '../migrations/setup_database.sql');
     const migrationSQL = await fs.readFile(migrationPath, 'utf8');
 
     // Executar a migração
