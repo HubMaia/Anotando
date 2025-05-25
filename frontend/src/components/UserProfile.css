@@ -282,4 +282,24 @@
   .modal-actions {
     flex-direction: column;
   }
+}
+
+.back-button {
+  background-color: transparent;
+  border: none;
+  color: #666;
+  font-size: 16px;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 15px;
+  transition: color 0.3s ease;
+  width: auto;
+  max-width: fit-content;
+}
+
+.back-button:hover {
+  color: #ffffff;
 } 
