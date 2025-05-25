@@ -115,6 +115,60 @@
   object-fit: contain;
 }
 
+.custom-horario-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.custom-horario-input input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+
+.custom-horario-input input:focus {
+  outline: none;
+  border-color: #03c596;
+}
+
+.horario-tipo-select {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.horario-tipo-select:focus {
+  outline: none;
+  border-color: #03c596;
+}
+
+.back-button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+  margin-top: 0.5rem;
+}
+
+.back-button:hover {
+  background-color: #c0392b;
+}
+
 .form-group input:focus,
 .select-selected:focus {
   outline: none;

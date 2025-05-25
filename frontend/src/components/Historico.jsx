@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import cafeImage from '../assets/images/CAFE-DA-MANHA.png';
 import cafeTardeImage from '../assets/images/CAFE-DA-TARDE.png';
 import almocoImage from '../assets/images/ALMOÇO.png';
 import jantaImage from '../assets/images/JANTA.png';
+import novoImage from '../assets/images/NOVO.png';
 import './Historico.css';
 
 const Historico = () => {
@@ -170,6 +173,8 @@ const Historico = () => {
   };
 
   const getMealImage = (horario) => {
+    if (!horario) return null;
+    
     if (horario.includes('Cafe-Tarde')) {
       return cafeTardeImage;
     } else if (horario.includes('Cafe')) {
@@ -178,13 +183,105 @@ const Historico = () => {
       return almocoImage;
     } else if (horario.includes('Janta')) {
       return jantaImage;
+    } else {
+      // Se não for nenhum dos horários padrão, é um horário personalizado
+      return novoImage;
     }
-    return null;
+  };
+
+  const gerarPDF = () => {
+    // Obter dados do usuário do localStorage
+    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    // Criar novo documento PDF
+    const doc = new jsPDF();
+    
+    // Adicionar título
+    doc.setFontSize(20);
+    doc.text('Histórico de Registros', 14, 22);
+    
+    // Adicionar informações do usuário
+    doc.setFontSize(12);
+    doc.text('Informações do Paciente:', 14, 35);
+    doc.setFontSize(10);
+    
+    let yPosition = 42;
+    doc.text(`Nome: ${userData.nome || '-'}`, 14, yPosition);
+    yPosition += 7;
+    doc.text(`Idade: ${userData.idade || '-'} anos`, 14, yPosition);
+    yPosition += 7;
+    doc.text(`Diagnóstico: ${userData.diagnostico || '-'}`, 14, yPosition);
+    yPosition += 7;
+    doc.text(`Médico: ${userData.nome_medico || '-'}`, 14, yPosition);
+    
+    // Adicionar data de geração
+    yPosition += 10;
+    const dataAtual = new Date().toLocaleDateString('pt-BR');
+    doc.text(`Relatório gerado em: ${dataAtual}`, 14, yPosition);
+    
+    // Preparar dados para a tabela
+    const dadosTabela = registros.map(registro => [
+      formatarData(registro.data),
+      registro.horario,
+      registro.valor_glicemia.toString(),
+      registro.descricao_refeicao || '-'
+    ]);
+    
+    // Configurar e gerar a tabela
+    autoTable(doc, {
+      head: [['Data', 'Horário', 'Glicemia (mg/dL)', 'Descrição da Refeição']],
+      body: dadosTabela,
+      startY: yPosition + 10,
+      styles: {
+        fontSize: 10,
+        cellPadding: 3,
+      },
+      headStyles: {
+        fillColor: [3, 197, 150], // Cor verde do tema
+        textColor: 255,
+        fontStyle: 'bold',
+      },
+      alternateRowStyles: {
+        fillColor: [245, 245, 245],
+      },
+      columnStyles: {
+        0: { cellWidth: 30 }, // Data
+        1: { cellWidth: 40 }, // Horário
+        2: { cellWidth: 30 }, // Glicemia
+        3: { cellWidth: 'auto' }, // Descrição
+      },
+    });
+    
+    // Adicionar legenda de status
+    const finalY = doc.lastAutoTable.finalY || 40;
+    doc.setFontSize(10);
+    doc.text('Legenda de Status:', 14, finalY + 10);
+    doc.setFontSize(8);
+    doc.text('• Normal: 70-99 mg/dL (jejum) ou < 200 mg/dL (pós-refeição)', 14, finalY + 17);
+    doc.text('• Pré-diabetes: 100-125 mg/dL (jejum)', 14, finalY + 24);
+    doc.text('• Diabetes: > 125 mg/dL (jejum) ou > 200 mg/dL (pós-refeição)', 14, finalY + 31);
+    doc.text('• Hipoglicemia: < 70 mg/dL', 14, finalY + 38);
+    
+    // Adicionar rodapé
+    doc.setFontSize(8);
+    doc.text('Este relatório foi gerado automaticamente pelo sistema Anotando.', 14, finalY + 50);
+    
+    // Salvar o PDF
+    doc.save('historico_registros.pdf');
   };
 
   return (
     <div className="historico-container">
-      <h3>Histórico de Registros</h3>
+      <div className="historico-header">
+        <h3>Histórico de Registros</h3>
+        <button 
+          className="pdf-button"
+          onClick={gerarPDF}
+          disabled={loading || registros.length === 0}
+        >
+          Gerar PDF
+        </button>
+      </div>
       
       <div className="meal-carousel">
         <img src={cafeImage} alt="Café da Manhã" className="meal-image" />

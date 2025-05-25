@@ -3,6 +3,7 @@ import axios from 'axios';
 import novoRegistroImage from '../assets/images/NOVOREGISTRO-IMAGE.png';
 import solImage from '../assets/images/SOL.png';
 import luaImage from '../assets/images/LUA.png';
+import novoImage from '../assets/images/NOVO.png';
 import './RegistroForm.css';
 
 const RegistroForm = ({ onRegistroAdded }) => {
@@ -17,6 +18,9 @@ const RegistroForm = ({ onRegistroAdded }) => {
   const [loading, setLoading] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [glicemiaWarning, setGlicemiaWarning] = useState('');
+  const [isCustomHorario, setIsCustomHorario] = useState(false);
+  const [customHorarioText, setCustomHorarioText] = useState('');
+  const [customHorarioTipo, setCustomHorarioTipo] = useState('');
   const dropdownRef = useRef(null);
 
   const horarios = [
@@ -27,7 +31,13 @@ const RegistroForm = ({ onRegistroAdded }) => {
     { value: 'Cafe-Tarde - Antes', label: 'Café da Tarde - Antes', icon: solImage },
     { value: 'Cafe-Tarde - Depois', label: 'Café da Tarde - Depois', icon: solImage },
     { value: 'Janta - Antes', label: 'Janta - Antes', icon: luaImage },
-    { value: 'Janta - Depois', label: 'Janta - Depois', icon: luaImage }
+    { value: 'Janta - Depois', label: 'Janta - Depois', icon: luaImage },
+    { value: 'custom', label: 'Horário Personalizado', icon: novoImage }
+  ];
+
+  const tiposHorario = [
+    { value: 'Antes', label: 'Antes' },
+    { value: 'Depois', label: 'Depois' }
   ];
 
   useEffect(() => {
@@ -79,13 +89,44 @@ const RegistroForm = ({ onRegistroAdded }) => {
   };
 
   const handleHorarioSelect = (horario) => {
-    setFormData({
-      ...formData,
-      horario: horario.value
-    });
+    if (horario.value === 'custom') {
+      setIsCustomHorario(true);
+      setFormData({
+        ...formData,
+        horario: ''
+      });
+    } else {
+      setIsCustomHorario(false);
+      setFormData({
+        ...formData,
+        horario: horario.value
+      });
+    }
     setIsDropdownOpen(false);
     setError('');
     setSuccess('');
+  };
+
+  const handleCustomHorarioChange = (e) => {
+    const { value } = e.target;
+    setCustomHorarioText(value);
+    if (customHorarioTipo) {
+      setFormData({
+        ...formData,
+        horario: `${value} - ${customHorarioTipo}`
+      });
+    }
+  };
+
+  const handleCustomHorarioTipoChange = (e) => {
+    const { value } = e.target;
+    setCustomHorarioTipo(value);
+    if (customHorarioText) {
+      setFormData({
+        ...formData,
+        horario: `${customHorarioText} - ${value}`
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -172,35 +213,78 @@ const RegistroForm = ({ onRegistroAdded }) => {
         
         <div className="form-group">
           <label htmlFor="horario">Horário</label>
-          <div className="custom-select" ref={dropdownRef}>
-            <div 
-              className="select-selected"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            >
-              {selectedHorario ? (
-                <div className="selected-option">
-                  <img src={selectedHorario.icon} alt="" className="time-icon" />
-                  <span>{selectedHorario.label}</span>
+          {isCustomHorario ? (
+            <div className="custom-horario-input">
+              <input
+                type="text"
+                id="horario"
+                name="horario"
+                value={customHorarioText}
+                onChange={handleCustomHorarioChange}
+                placeholder="Digite seu horário personalizado"
+                maxLength={50}
+                required
+              />
+              <select
+                value={customHorarioTipo}
+                onChange={handleCustomHorarioTipoChange}
+                className="horario-tipo-select"
+                required
+              >
+                <option value="">Selecione</option>
+                {tiposHorario.map(tipo => (
+                  <option key={tipo.value} value={tipo.value}>
+                    {tipo.label}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className="back-button"
+                onClick={() => {
+                  setIsCustomHorario(false);
+                  setCustomHorarioText('');
+                  setCustomHorarioTipo('');
+                  setFormData({
+                    ...formData,
+                    horario: ''
+                  });
+                }}
+              >
+                Voltar
+              </button>
+            </div>
+          ) : (
+            <div className="custom-select" ref={dropdownRef}>
+              <div 
+                className="select-selected"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                {selectedHorario ? (
+                  <div className="selected-option">
+                    <img src={selectedHorario.icon} alt="" className="time-icon" />
+                    <span>{selectedHorario.label}</span>
+                  </div>
+                ) : (
+                  'Selecione o horário'
+                )}
+              </div>
+              {isDropdownOpen && (
+                <div className="select-items">
+                  {horarios.map(horario => (
+                    <div
+                      key={horario.value}
+                      className="select-item"
+                      onClick={() => handleHorarioSelect(horario)}
+                    >
+                      <img src={horario.icon} alt="" className="time-icon" />
+                      <span>{horario.label}</span>
+                    </div>
+                  ))}
                 </div>
-              ) : (
-                'Selecione o horário'
               )}
             </div>
-            {isDropdownOpen && (
-              <div className="select-items">
-            {horarios.map(horario => (
-                  <div
-                    key={horario.value}
-                    className="select-item"
-                    onClick={() => handleHorarioSelect(horario)}
-                  >
-                    <img src={horario.icon} alt="" className="time-icon" />
-                    <span>{horario.label}</span>
-                  </div>
-            ))}
-              </div>
-            )}
-          </div>
+          )}
         </div>
         
         <div className="form-group">

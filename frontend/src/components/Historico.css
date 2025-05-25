@@ -5,12 +5,41 @@
   padding: 1.5rem;
 }
 
-.historico-container h3 {
-  color: #2c3e50;
-  margin-top: 0;
+.historico-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1rem;
   border-bottom: 1px solid #ecf0f1;
   padding-bottom: 0.75rem;
+}
+
+.historico-header h3 {
+  color: #2c3e50;
+  margin: 0;
+}
+
+.pdf-button {
+  background-color: #03c596;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pdf-button:hover {
+  background-color: #02a37d;
+}
+
+.pdf-button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
 }
 
 .meal-carousel {

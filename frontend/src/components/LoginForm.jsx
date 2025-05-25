@@ -7,6 +7,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
   const [formData, setFormData] = useState({
     email: '',
     senha: '',
+    confirmarSenha: '',
     nome: '',
     idade: '',
     diagnostico: '',
@@ -19,9 +20,10 @@ const LoginForm = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
     setError('');
   };
@@ -34,40 +36,36 @@ const LoginForm = ({ setIsAuthenticated }) => {
 
     try {
       if (isRegister) {
-        // Cadastro
-        const { nome, email, senha, idade, diagnostico, nome_medico } = formData;
-        if (!nome || !email || !senha || !idade) {
-          setError('Preencha todos os campos obrigatórios.');
+        // Validações para registro
+        if (formData.senha !== formData.confirmarSenha) {
+          setError('As senhas não coincidem');
           setMessageType('error');
           setLoading(false);
           return;
         }
 
-        // Validar idade
-        const idadeNum = parseInt(idade, 10);
-        if (isNaN(idadeNum) || idadeNum < 0 || idadeNum > 200) {
-          setError('Por favor, insira uma idade válida entre 0 e 200 anos');
+        if (formData.senha.length < 6) {
+          setError('A senha deve ter pelo menos 6 caracteres');
           setMessageType('error');
           setLoading(false);
           return;
         }
 
-        await axios.post('http://localhost:5000/api/auth/register', {
-          nome,
-          email,
-          senha,
-          idade: idadeNum,
-          diagnostico,
-          nome_medico
+        const response = await axios.post('http://localhost:5000/api/auth/register', {
+          nome: formData.nome,
+          email: formData.email,
+          senha: formData.senha,
+          idade: parseInt(formData.idade),
+          diagnostico: formData.diagnostico || null,
+          nome_medico: formData.nome_medico || null
         });
-        setIsRegister(false);
-        setError('Cadastro realizado com sucesso! Faça login.');
-        setMessageType('success');
-        setFormData({
-          email: '', senha: '', nome: '', idade: '', diagnostico: '', nome_medico: ''
-        });
-        setLoading(false);
-        return;
+
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
+          localStorage.setItem('user', JSON.stringify(response.data.user));
+          setIsAuthenticated(true);
+          navigate('/dashboard');
+        }
       } else {
         // Login
         const response = await axios.post('http://localhost:5000/api/auth/login', {
@@ -178,8 +176,25 @@ const LoginForm = ({ setIsAuthenticated }) => {
               onChange={handleChange}
               required
               placeholder="Sua senha"
+              minLength={6}
             />
           </div>
+          
+          {isRegister && (
+            <div className="form-group">
+              <label htmlFor="confirmarSenha">Confirme sua senha <span style={{color:'#e74c3c'}}>*</span></label>
+              <input
+                type="password"
+                id="confirmarSenha"
+                name="confirmarSenha"
+                value={formData.confirmarSenha}
+                onChange={handleChange}
+                required
+                placeholder="Confirme sua senha"
+                minLength={6}
+              />
+            </div>
+          )}
           
           <button 
             type="submit" 
