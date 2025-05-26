@@ -1,32 +1,43 @@
 # Anotando - Aplicativo de Registro de Glicemia
 
+O Anotando é um aplicativo web desenvolvido para ajudar pessoas com diabetes a monitorar seus níveis de glicemia de forma simples e eficiente.
+
 ## Sobre o Projeto
 
 Anotando é um aplicativo web desenvolvido para ajudar pessoas com diabetes a registrar e monitorar seus níveis de glicemia. O aplicativo permite registrar medições de glicemia em diferentes horários do dia, incluindo descrições detalhadas das refeições.
 
 ## Funcionalidades
 
-- Registro de medições de glicemia com data e horário
-- Categorização automática dos níveis de glicemia (hipoglicemia, normal, pré-diabetes, diabetes)
-- Registro detalhado das refeições com descrições
-- Visualização do histórico de registros
-- Filtro de registros por período
+- Registro de medições de glicemia com horários específicos
+- Diferentes tipos de medição:
+  - Antes das refeições (em jejum)
+  - Depois das refeições (após comer)
+- Registro de refeições (apenas para medições após comer)
+- Histórico de registros com filtros por data
+- Geração de relatórios em PDF
 - Interface intuitiva com ícones para cada tipo de refeição
-- Modal para visualização detalhada das descrições das refeições
-- Sistema de autenticação de usuários
-- Validação de idade (maior de 18 anos)
+- Validação de valores glicêmicos
+- Alertas para valores críticos
 
 ## Tecnologias Utilizadas
 
-- Frontend: React.js
-- Backend: Node.js com Express
-- Banco de Dados: MySQL
-- Autenticação: JWT (JSON Web Tokens)
-- Estilização: CSS puro
+### Frontend
+
+- React.js
+- Axios para requisições HTTP
+- jsPDF e jspdf-autotable para geração de PDFs
+- CSS para estilização
+
+### Backend
+
+- Node.js
+- Express.js
+- MySQL
+- JWT para autenticação
 
 ## Estrutura do Projeto
 
-````
+```
 anotando/
 ├── frontend/           # Aplicação React
 │   ├── src/
@@ -39,91 +50,96 @@ anotando/
     ├── migrations/    # Scripts SQL
     ├── src/          # Código fonte
     └── package.json  # Dependências do backend
-     ```
-
-## Instalação e Execução
-
-### Pré-requisitos
-
-- Node.js (versão 14 ou superior)
-- MySQL
-- NPM ou Yarn
-
-### Configuração do Banco de Dados
-
-1. Instale o MySQL em sua máquina
-2. Crie um banco de dados chamado `anotandodb`:
-```sql
-CREATE DATABASE anotandodb;
-````
-
-3. Configure as variáveis de ambiente no arquivo `.env` do backend:
-
-```
-DB_HOST=localhost
-   DB_PORT=3306
-DB_USER=root
-   DB_PASSWORD=sua_senha
-DB_NAME=anotandodb
-   JWT_SECRET=sua_chave_secreta
 ```
 
-### Backend
+## Instalação
 
-1. Navegue até a pasta do backend:
+1. Clone o repositório:
+
+```bash
+git clone https://github.com/seu-usuario/anotando.git
+cd anotando
+```
+
+2. Instale as dependências do backend:
 
 ```bash
 cd backend
+npm install
 ```
 
-2. Instale as dependências:
-   ```bash
-   npm install
-   ```
-
-````
-3. Execute as migrações do banco de dados em ordem:
-```bash
-   # Execute cada arquivo de migração na ordem:
-   mysql -u root -p anotandodb < migrations/initial_setup.sql
-   mysql -u root -p anotandodb < migrations/add_descricao_refeicao.sql
-   mysql -u root -p anotandodb < migrations/update_horario_enum.sql
-   mysql -u root -p anotandodb < migrations/add_age_validation.sql
-````
-
-4. Inicie o servidor:
+3. Instale as dependências do frontend:
 
 ```bash
+cd ../frontend
+npm install
+```
+
+4. Configure o banco de dados MySQL:
+
+- Crie um banco de dados chamado `anotandodb`
+- Execute o script de migração em `backend/migrations/setup_database.sql`
+
+5. Configure as variáveis de ambiente:
+
+- Crie um arquivo `.env` na pasta `backend` com as seguintes variáveis:
+
+```
+DB_HOST=localhost
+DB_USER=seu_usuario
+DB_PASSWORD=sua_senha
+DB_NAME=anotandodb
+JWT_SECRET=seu_segredo_jwt
+```
+
+## Executando o Projeto
+
+1. Inicie o backend:
+
+```bash
+cd backend
 npm start
 ```
 
-### Frontend
-
-1. Navegue até a pasta do frontend:
+2. Em outro terminal, inicie o frontend:
 
 ```bash
 cd frontend
+npm start
 ```
 
-2. Instale as dependências:
-   ```bash
-   npm install
-   ```
-3. Inicie a aplicação:
-   ```bash
-   npm start
-   ```
-
-```
+O aplicativo estará disponível em `http://localhost:3000`
 
 ## Uso
 
-1. Acesse a aplicação em `http://localhost:3000`
-2. Faça login ou registre-se (lembre-se que é necessário ter 18 anos ou mais)
-3. Use o formulário para registrar suas medições de glicemia
-4. Visualize seu histórico na página de histórico
-5. Use os filtros para buscar registros específicos
-6. Clique nas descrições das refeições para ver detalhes completos
+1. Crie uma conta ou faça login
+2. Na página principal, você pode:
+   - Registrar uma nova medição de glicemia
+   - Selecionar o horário (antes/depois das refeições)
+   - Inserir o valor da glicemia
+   - Adicionar descrição da refeição (apenas para medições após comer)
+3. No histórico, você pode:
+   - Visualizar todos os registros
+   - Filtrar por período
+   - Gerar relatório em PDF
+   - Excluir registros
+
+## Valores de Referência
+
+### Em Jejum
+
+- Normal: 70-99 mg/dL
+- Pré-diabetes: 100-125 mg/dL
+- Diabetes: > 125 mg/dL
+
+### Após Refeição
+
+- Normal: < 200 mg/dL
+- Diabetes: > 200 mg/dL
+
+### Hipoglicemia
+
+- < 70 mg/dL
 
 ## Solução de Problemas
 
@@ -157,4 +173,7 @@ cd frontend
 ## Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+```
+
 ```

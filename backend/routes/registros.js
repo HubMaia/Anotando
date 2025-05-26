@@ -57,21 +57,10 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ message: 'Todos os campos são obrigatórios' });
     }
     
-    // Validar o horário (deve ser um dos valores permitidos)
-    const horariosPermitidos = [
-      'Cafe - Antes', 
-      'Cafe - Depois', 
-      'Cafe-Tarde - Antes',
-      'Cafe-Tarde - Depois',
-      'Almoco - Antes', 
-      'Almoco - Depois', 
-      'Janta - Antes', 
-      'Janta - Depois'
-    ];
-    
-    if (!horariosPermitidos.includes(horario)) {
+    // Validar o horário (deve ter no máximo 50 caracteres)
+    if (horario.length > 50) {
       return res.status(400).json({ 
-        message: 'Horário inválido. Deve ser um dos seguintes valores: ' + horariosPermitidos.join(', ')
+        message: 'O horário deve ter no máximo 50 caracteres'
       });
     }
     
@@ -103,21 +92,10 @@ router.put('/:id', async (req, res) => {
       return res.status(400).json({ message: 'Todos os campos são obrigatórios' });
     }
     
-    // Validar o horário (deve ser um dos valores permitidos)
-    const horariosPermitidos = [
-      'Cafe - Antes', 
-      'Cafe - Depois', 
-      'Cafe-Tarde - Antes',
-      'Cafe-Tarde - Depois',
-      'Almoco - Antes', 
-      'Almoco - Depois', 
-      'Janta - Antes', 
-      'Janta - Depois'
-    ];
-    
-    if (!horariosPermitidos.includes(horario)) {
+    // Validar o horário (deve ter no máximo 50 caracteres)
+    if (horario.length > 50) {
       return res.status(400).json({ 
-        message: 'Horário inválido. Deve ser um dos seguintes valores: ' + horariosPermitidos.join(', ')
+        message: 'O horário deve ter no máximo 50 caracteres'
       });
     }
     

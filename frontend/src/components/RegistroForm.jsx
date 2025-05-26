@@ -1,8 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import novoRegistroImage from '../assets/images/NOVOREGISTRO-IMAGE.png';
-import solImage from '../assets/images/SOL.png';
-import luaImage from '../assets/images/LUA.png';
+import cafeManhaImage from '../assets/images/CAFE-DA-MANHA.png';
+import cafeManhaJejumImage from '../assets/images/CAFE-DA-MANHA-JEJUM.png';
+import almocoImage from '../assets/images/ALMOÇO.png';
+import almocoJejumImage from '../assets/images/ALMOÇO-JEJUM.png';
+import cafeTardeImage from '../assets/images/CAFE-DA-TARDE.png';
+import cafeTardeJejumImage from '../assets/images/CAFE-DA-TARDE-JEJUM.png';
+import jantaImage from '../assets/images/JANTA.png';
+import jantaJejumImage from '../assets/images/JANTA-JEJUM.png';
 import novoImage from '../assets/images/NOVO.png';
 import './RegistroForm.css';
 
@@ -24,20 +30,20 @@ const RegistroForm = ({ onRegistroAdded }) => {
   const dropdownRef = useRef(null);
 
   const horarios = [
-    { value: 'Cafe - Antes', label: 'Café - Antes', icon: solImage },
-    { value: 'Cafe - Depois', label: 'Café - Depois', icon: solImage },
-    { value: 'Almoco - Antes', label: 'Almoço - Antes', icon: solImage },
-    { value: 'Almoco - Depois', label: 'Almoço - Depois', icon: solImage },
-    { value: 'Cafe-Tarde - Antes', label: 'Café da Tarde - Antes', icon: solImage },
-    { value: 'Cafe-Tarde - Depois', label: 'Café da Tarde - Depois', icon: solImage },
-    { value: 'Janta - Antes', label: 'Janta - Antes', icon: luaImage },
-    { value: 'Janta - Depois', label: 'Janta - Depois', icon: luaImage },
+    { value: 'Cafe - Antes', label: 'Antes do Café (Em jejum)', icon: cafeManhaJejumImage },
+    { value: 'Cafe - Depois', label: 'Depois do Café (Após comer)', icon: cafeManhaImage },
+    { value: 'Almoco - Antes', label: 'Antes do Almoço (Em jejum)', icon: almocoJejumImage },
+    { value: 'Almoco - Depois', label: 'Depois do Almoço (Após comer)', icon: almocoImage },
+    { value: 'Cafe-Tarde - Antes', label: 'Antes do Café da Tarde (Em jejum)', icon: cafeTardeJejumImage },
+    { value: 'Cafe-Tarde - Depois', label: 'Depois do Café da Tarde (Após comer)', icon: cafeTardeImage },
+    { value: 'Janta - Antes', label: 'Antes da Janta (Em jejum)', icon: jantaJejumImage },
+    { value: 'Janta - Depois', label: 'Depois da Janta (Após comer)', icon: jantaImage },
     { value: 'custom', label: 'Horário Personalizado', icon: novoImage }
   ];
 
   const tiposHorario = [
-    { value: 'Antes', label: 'Antes' },
-    { value: 'Depois', label: 'Depois' }
+    { value: 'Antes', label: 'Antes (Em jejum)' },
+    { value: 'Depois', label: 'Depois (Após comer)' }
   ];
 
   useEffect(() => {
@@ -288,7 +294,7 @@ const RegistroForm = ({ onRegistroAdded }) => {
         </div>
         
         <div className="form-group">
-          <label htmlFor="valor_glicemia">Valor Glicêmico (mg/dL)</label>
+          <label htmlFor="valor_glicemia">Em quanto está sua glicemia? (mg/dL)</label>
           <input
             type="number"
             id="valor_glicemia"
@@ -308,14 +314,22 @@ const RegistroForm = ({ onRegistroAdded }) => {
         </div>
         
         <div className="form-group">
-          <label htmlFor="descricao_refeicao">Quer anotar o que comeu?</label>
+          <label htmlFor="descricao_refeicao">
+            {(formData.horario.includes('Antes') || customHorarioTipo === 'Antes')
+              ? 'Você está em jejum, não é possível anotar refeição'
+              : 'Quer anotar o que comeu?'}
+          </label>
           <textarea
             id="descricao_refeicao"
             name="descricao_refeicao"
             value={formData.descricao_refeicao}
             onChange={handleChange}
-            placeholder="Escreva aqui sua refeição"
+            placeholder={(formData.horario.includes('Antes') || customHorarioTipo === 'Antes')
+              ? 'Ooops!'
+              : 'Escreva aqui sua refeição'}
             rows="3"
+            disabled={formData.horario.includes('Antes') || customHorarioTipo === 'Antes'}
+            className={(formData.horario.includes('Antes') || customHorarioTipo === 'Antes') ? 'disabled-textarea' : ''}
           />
         </div>
         

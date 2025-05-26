@@ -110,8 +110,8 @@
 }
 
 .time-icon {
-  width: 20px;
-  height: 20px;
+  width: 45px;
+  height: 45px;
   object-fit: contain;
 }
 
@@ -239,4 +239,15 @@
 .form-group textarea:focus {
   outline: none;
   border-color: #03c596;
+}
+
+.disabled-textarea {
+  background-color: #f8f9fa;
+  cursor: not-allowed;
+  color: #95a5a6;
+  border-color: #ddd;
+}
+
+.disabled-textarea::placeholder {
+  color: #95a5a6;
 } 

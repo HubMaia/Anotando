@@ -222,7 +222,7 @@ const Historico = () => {
     // Preparar dados para a tabela
     const dadosTabela = registros.map(registro => [
       formatarData(registro.data),
-      registro.horario,
+      formatarHorario(registro.horario),
       registro.valor_glicemia.toString(),
       registro.descricao_refeicao || '-'
     ]);
@@ -268,6 +268,25 @@ const Historico = () => {
     
     // Salvar o PDF
     doc.save('historico_registros.pdf');
+  };
+
+  const formatarHorario = (horario) => {
+    if (!horario) return '';
+    
+    const [refeicao, tipo] = horario.split(' - ');
+    
+    if (refeicao === 'custom') return horario;
+    
+    const refeicaoFormatada = refeicao
+      .replace('Cafe', 'Café')
+      .replace('Almoco', 'Almoço')
+      .replace('Cafe-Tarde', 'Café da Tarde');
+    
+    if (tipo === 'Antes') {
+      return `Antes do ${refeicaoFormatada} (Em jejum)`;
+    } else {
+      return `Depois do ${refeicaoFormatada} (Após comer)`;
+    }
   };
 
   return (
@@ -355,7 +374,7 @@ const Historico = () => {
               {registros.map(registro => (
                 <tr key={registro.id}>
                   <td>{formatarData(registro.data)}</td>
-                  <td>{registro.horario}</td>
+                  <td>{formatarHorario(registro.horario)}</td>
                   <td className={`valor-glicemia ${getStatusGlicemia(registro.valor_glicemia, registro.horario)}`}>
                     {registro.valor_glicemia}
                   </td>
