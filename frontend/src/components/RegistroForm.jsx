@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import novoRegistroImage from '../assets/images/NOVOREGISTRO-IMAGE.png';
 import cafeManhaImage from '../assets/images/CAFE-DA-MANHA.png';
 import cafeManhaJejumImage from '../assets/images/CAFE-DA-MANHA-JEJUM.png';
@@ -68,7 +69,7 @@ const RegistroForm = ({ onRegistroAdded }) => {
       today.setHours(0, 0, 0, 0); // Reset time to start of day
       
       if (selectedDate > today) {
-        setError('Não é possível registrar glicemia para datas futuras');
+        toast.error('Não é possível registrar glicemia para datas futuras');
         return;
       }
     }
@@ -76,11 +77,11 @@ const RegistroForm = ({ onRegistroAdded }) => {
     if (name === 'valor_glicemia') {
       const valor = parseInt(value);
       if (valor > 600) {
-        setError('O valor glicêmico não pode ser maior que 600 mg/dL');
+        toast.error('O valor glicêmico não pode ser maior que 600 mg/dL');
         return;
       }
       if (valor >= 300) {
-        setGlicemiaWarning('Atenção: Valor glicêmico muito alto. Recomendamos procurar ajuda médica.');
+        toast.warning('Atenção: Valor glicêmico muito alto. Recomendamos procurar ajuda médica.');
       } else {
         setGlicemiaWarning('');
       }
@@ -143,7 +144,7 @@ const RegistroForm = ({ onRegistroAdded }) => {
 
     // Validação básica
     if (!formData.data || !formData.horario || !formData.valor_glicemia) {
-      setError('Preencha todos os campos');
+      toast.error('Preencha todos os campos');
       setLoading(false);
       return;
     }
@@ -152,7 +153,7 @@ const RegistroForm = ({ onRegistroAdded }) => {
       const token = localStorage.getItem('token');
       
       if (!token) {
-        setError('Usuário não autenticado');
+        toast.error('Usuário não autenticado');
         setLoading(false);
         return;
       }
@@ -167,7 +168,7 @@ const RegistroForm = ({ onRegistroAdded }) => {
         }
       );
 
-      setSuccess('Registro salvo com sucesso!');
+      toast.success('Registro salvo com sucesso!');
       
       // Limpar o formulário, mas manter a data atual
       setFormData({
@@ -182,7 +183,7 @@ const RegistroForm = ({ onRegistroAdded }) => {
         onRegistroAdded();
       }
     } catch (error) {
-      setError(
+      toast.error(
         error.response?.data?.message || 
         'Erro ao salvar o registro. Tente novamente.'
       );

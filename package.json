@@ -8,7 +8,11 @@
     "server": "nodemon backend/server.js",
     "client": "cd frontend && npm start",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "install-all": "npm install && cd frontend && npm install"
+    "install-all": "npm install && cd frontend && npm install",
+    "build": "cd frontend && npm run build",
+    "prod": "npm run build && npm start",
+    "clean": "rm -rf node_modules && rm -rf frontend/node_modules",
+    "setup": "npm run install-all && npm run dev"
   },
   "keywords": [
     "glicemia",

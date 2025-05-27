@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import LoginForm from './components/LoginForm';
 import RegistroForm from './components/RegistroForm';
 import Historico from './components/Historico';
@@ -17,8 +19,6 @@ const RegisterPage = () => {
     senha: '',
     confirmarSenha: ''
   });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   
   const handleChange = (e) => {
@@ -26,17 +26,15 @@ const RegisterPage = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
-    setError('');
   };
   
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
     
     // Validações básicas
     if (formData.senha !== formData.confirmarSenha) {
-      setError('As senhas não conferem');
+      toast.error('As senhas não conferem');
       setLoading(false);
       return;
     }
@@ -48,7 +46,7 @@ const RegisterPage = () => {
         senha: formData.senha
       });
       
-      setSuccess('Conta criada com sucesso! Você já pode fazer login.');
+      toast.success('Conta criada com sucesso! Você já pode fazer login.');
       setFormData({
         nome: '',
         email: '',
@@ -56,7 +54,7 @@ const RegisterPage = () => {
         confirmarSenha: ''
       });
     } catch (error) {
-      setError(
+      toast.error(
         error.response?.data?.message || 
         'Erro ao criar conta. Tente novamente.'
       );
@@ -70,9 +68,6 @@ const RegisterPage = () => {
       <div className="register-card">
         <h2>Criar Conta</h2>
         <h3>Anotando - Controle de Glicemia</h3>
-        
-        {error && <div className="error-message">{error}</div>}
-        {success && <div className="success-message">{success}</div>}
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -205,6 +200,18 @@ const App = () => {
   
   return (
     <Router>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Routes>
         <Route 
           path="/login" 

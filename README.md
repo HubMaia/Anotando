@@ -61,26 +61,18 @@ git clone https://github.com/seu-usuario/anotando.git
 cd anotando
 ```
 
-2. Instale as dependências do backend:
+2. Instale todas as dependências (backend e frontend) com um único comando:
 
 ```bash
-cd backend
-npm install
+npm run install-all
 ```
 
-3. Instale as dependências do frontend:
-
-```bash
-cd ../frontend
-npm install
-```
-
-4. Configure o banco de dados MySQL:
+3. Configure o banco de dados MySQL:
 
 - Crie um banco de dados chamado `anotandodb`
 - Execute o script de migração em `backend/migrations/setup_database.sql`
 
-5. Configure as variáveis de ambiente:
+4. Configure as variáveis de ambiente:
 
 - Crie um arquivo `.env` na pasta `backend` com as seguintes variáveis:
 
@@ -94,21 +86,58 @@ JWT_SECRET=seu_segredo_jwt
 
 ## Executando o Projeto
 
-1. Inicie o backend:
+### Desenvolvimento
+
+Para iniciar o projeto em modo de desenvolvimento (backend + frontend) com um único comando:
 
 ```bash
-cd backend
-npm start
+npm run dev
 ```
 
-2. Em outro terminal, inicie o frontend:
+Ou, se preferir instalar as dependências e iniciar o projeto de uma vez:
 
 ```bash
-cd frontend
-npm start
+npm run setup
 ```
 
-O aplicativo estará disponível em `http://localhost:3000`
+### Produção
+
+Para build do frontend:
+
+```bash
+npm run build
+```
+
+Para executar em produção:
+
+```bash
+npm run prod
+```
+
+### Outros Comandos Úteis
+
+- Limpar todas as dependências:
+
+```bash
+npm run clean
+```
+
+- Iniciar apenas o backend:
+
+```bash
+npm run server
+```
+
+- Iniciar apenas o frontend:
+
+```bash
+npm run client
+```
+
+O aplicativo estará disponível em:
+
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:5000`
 
 ## Uso
 

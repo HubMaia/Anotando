@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import './LoginForm.css';
 
 const LoginForm = ({ setIsAuthenticated }) => {
@@ -13,10 +14,8 @@ const LoginForm = ({ setIsAuthenticated }) => {
     diagnostico: '',
     nome_medico: ''
   });
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
-  const [messageType, setMessageType] = useState('error');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -25,28 +24,23 @@ const LoginForm = ({ setIsAuthenticated }) => {
       ...formData,
       [name]: value
     });
-    setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setMessageType('error');
 
     try {
       if (isRegister) {
         // Validações para registro
         if (formData.senha !== formData.confirmarSenha) {
-          setError('As senhas não coincidem');
-          setMessageType('error');
+          toast.error('As senhas não coincidem');
           setLoading(false);
           return;
         }
 
         if (formData.senha.length < 6) {
-          setError('A senha deve ter pelo menos 6 caracteres');
-          setMessageType('error');
+          toast.error('A senha deve ter pelo menos 6 caracteres');
           setLoading(false);
           return;
         }
@@ -64,6 +58,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
           localStorage.setItem('token', response.data.token);
           localStorage.setItem('user', JSON.stringify(response.data.user));
           setIsAuthenticated(true);
+          toast.success('Cadastro realizado com sucesso!');
           navigate('/dashboard');
         }
       } else {
@@ -72,17 +67,17 @@ const LoginForm = ({ setIsAuthenticated }) => {
           email: formData.email,
           senha: formData.senha
         });
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      setIsAuthenticated(true);
-      navigate('/dashboard');
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        setIsAuthenticated(true);
+        toast.success('Login realizado com sucesso!');
+        navigate('/dashboard');
       }
     } catch (error) {
-      setError(
+      toast.error(
         error.response?.data?.message || 
         (isRegister ? 'Erro ao cadastrar. Verifique os dados.' : 'Erro ao fazer login. Verifique suas credenciais.')
       );
-      setMessageType('error');
     } finally {
       setLoading(false);
     }
@@ -97,8 +92,6 @@ const LoginForm = ({ setIsAuthenticated }) => {
       <div className="login-card">
         <h2>{isRegister ? 'Cadastro' : 'Login'}</h2>
         <h3>Anotando - Controle de Glicemia</h3>
-        
-        {error && <div className={messageType === 'success' ? 'success-message' : 'error-message'}>{error}</div>}
         
         <form onSubmit={handleSubmit}>
           {isRegister && (
@@ -211,7 +204,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
               <p>Já tem uma conta?</p>
               <button 
                 className="register-button" 
-                onClick={() => { setIsRegister(false); setError(''); }}
+                onClick={() => { setIsRegister(false); }}
               >
                 Fazer login
               </button>
@@ -221,7 +214,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
           <p>Não tem uma conta?</p>
           <button 
             className="register-button" 
-                onClick={() => { setIsRegister(true); setError(''); }}
+                onClick={() => { setIsRegister(true); }}
           >
             Cadastre-se
           </button>
