@@ -243,6 +243,10 @@
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .submit-button:hover {
@@ -252,6 +256,12 @@
 .submit-button:disabled {
   background-color: #95a5a6;
   cursor: not-allowed;
+}
+
+.submit-button svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
 }
 
 .error-message {
@@ -479,4 +489,89 @@
   gap: 10px;
   position: relative;
   margin-bottom: 0.75rem;
+}
+
+.food-input-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  position: relative;
+  margin-top: 1rem;
+}
+
+.food-input-container textarea {
+  flex: 1;
+  min-height: 80px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+  resize: vertical;
+}
+
+.food-input-container textarea:focus {
+  outline: none;
+  border-color: #03c596;
+}
+
+.food-input-container .voice-button {
+  margin-top: 0.5rem;
+}
+
+.food-input-container .voice-status {
+  position: absolute;
+  left: 60px;
+  top: 0;
+  transform: translateY(-50%);
+  background-color: #2c3e50;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+.food-input-container .voice-status.show {
+  opacity: 1;
+}
+
+.date-input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.date-input-container input {
+  flex: 1;
+}
+
+.date-input-container .voice-button {
+  flex-shrink: 0;
+}
+
+.date-input-container .voice-status {
+  position: absolute;
+  left: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #2c3e50;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+.date-input-container .voice-status.show {
+  opacity: 1;
 } 

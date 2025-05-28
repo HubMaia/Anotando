@@ -40,6 +40,12 @@ const RegistroForm = ({ onRegistroAdded }) => {
   const [isListeningPredefined, setIsListeningPredefined] = useState(false);
   const [isReadyToListenPredefined, setIsReadyToListenPredefined] = useState(false);
   const predefinedRecognitionRef = useRef(null);
+  const [isListeningFood, setIsListeningFood] = useState(false);
+  const [isReadyToListenFood, setIsReadyToListenFood] = useState(false);
+  const foodRecognitionRef = useRef(null);
+  const [isListeningDate, setIsListeningDate] = useState(false);
+  const [isReadyToListenDate, setIsReadyToListenDate] = useState(false);
+  const dateRecognitionRef = useRef(null);
 
   const horarios = [
     { 
@@ -341,6 +347,127 @@ const RegistroForm = ({ onRegistroAdded }) => {
       };
     }
 
+    // Inicializa o reconhecimento de voz para alimentos
+    if ('webkitSpeechRecognition' in window) {
+      foodRecognitionRef.current = new window.webkitSpeechRecognition();
+      foodRecognitionRef.current.continuous = false;
+      foodRecognitionRef.current.interimResults = false;
+      foodRecognitionRef.current.lang = 'pt-BR';
+
+      foodRecognitionRef.current.onresult = (event) => {
+        const transcript = event.results[0][0].transcript.toLowerCase();
+        
+        // Limpa e formata o texto dos alimentos
+        let alimentos = transcript
+          .replace(/ e /g, ', ') // Substitui "e" por vírgula
+          .replace(/ mais /g, ', ') // Substitui "mais" por vírgula
+          .replace(/ com /g, ', ') // Substitui "com" por vírgula
+          .replace(/  +/g, ' ') // Remove espaços extras
+          .split(',') // Divide em array
+          .map(item => item.trim()) // Remove espaços no início e fim
+          .filter(item => item.length > 0) // Remove itens vazios
+          .join(', '); // Junta novamente com vírgula e espaço
+
+        setFormData(prev => ({
+          ...prev,
+          descricao_refeicao: alimentos
+        }));
+
+        speak(`Anotei os alimentos: ${alimentos}. Se precisar corrigir, é só clicar no microfone novamente.`);
+        setIsListeningFood(false);
+        setIsReadyToListenFood(false);
+      };
+
+      foodRecognitionRef.current.onerror = (event) => {
+        console.error('Erro no reconhecimento de voz dos alimentos:', event.error);
+        speak('Ops! Tivemos um probleminha. Vamos tentar de novo?');
+        setIsListeningFood(false);
+        setIsReadyToListenFood(false);
+      };
+
+      foodRecognitionRef.current.onend = () => {
+        setIsListeningFood(false);
+        setIsReadyToListenFood(false);
+      };
+    }
+
+    // Inicializa o reconhecimento de voz para data
+    if ('webkitSpeechRecognition' in window) {
+      dateRecognitionRef.current = new window.webkitSpeechRecognition();
+      dateRecognitionRef.current.continuous = false;
+      dateRecognitionRef.current.interimResults = false;
+      dateRecognitionRef.current.lang = 'pt-BR';
+
+      dateRecognitionRef.current.onresult = (event) => {
+        const transcript = event.results[0][0].transcript.toLowerCase();
+        
+        // Mapeamento de meses em português
+        const meses = {
+          'janeiro': '01', 'fevereiro': '02', 'março': '03', 'marco': '03',
+          'abril': '04', 'maio': '05', 'junho': '06', 'julho': '07',
+          'agosto': '08', 'setembro': '09', 'outubro': '10',
+          'novembro': '11', 'dezembro': '12'
+        };
+
+        // Tenta extrair a data do texto falado
+        let data = null;
+        
+        // Formato: "hoje" ou "ontem"
+        if (transcript.includes('hoje')) {
+          data = new Date().toISOString().split('T')[0];
+        } else if (transcript.includes('ontem')) {
+          const ontem = new Date();
+          ontem.setDate(ontem.getDate() - 1);
+          data = ontem.toISOString().split('T')[0];
+        } else {
+          // Formato: "dia mês" ou "dia de mês"
+          const match = transcript.match(/(\d{1,2})(?:\s+de\s+|\s+)([a-zç]+)/);
+          if (match) {
+            const dia = match[1].padStart(2, '0');
+            const mes = meses[match[2]];
+            if (mes) {
+              const ano = new Date().getFullYear();
+              data = `${ano}-${mes}-${dia}`;
+            }
+          }
+        }
+
+        if (data) {
+          const dataSelecionada = new Date(data);
+          const hoje = new Date();
+          hoje.setHours(0, 0, 0, 0);
+
+          if (dataSelecionada > hoje) {
+            speak('Não é possível registrar para datas futuras. Por favor, escolha uma data válida.');
+            toast.error('Não é possível registrar para datas futuras');
+          } else {
+            setFormData(prev => ({
+              ...prev,
+              data: data
+            }));
+            speak(`Anotei a data ${data.split('-').reverse().join('/')}. Se precisar corrigir, é só clicar no microfone novamente.`);
+          }
+        } else {
+          speak('Não consegui entender a data. Você pode dizer "hoje", "ontem" ou uma data específica como "15 de março". Vamos tentar de novo?');
+        }
+        
+        setIsListeningDate(false);
+        setIsReadyToListenDate(false);
+      };
+
+      dateRecognitionRef.current.onerror = (event) => {
+        console.error('Erro no reconhecimento de voz da data:', event.error);
+        speak('Ops! Tivemos um probleminha. Vamos tentar de novo?');
+        setIsListeningDate(false);
+        setIsReadyToListenDate(false);
+      };
+
+      dateRecognitionRef.current.onend = () => {
+        setIsListeningDate(false);
+        setIsReadyToListenDate(false);
+      };
+    }
+
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
@@ -350,6 +477,12 @@ const RegistroForm = ({ onRegistroAdded }) => {
       }
       if (predefinedRecognitionRef.current) {
         predefinedRecognitionRef.current.stop();
+      }
+      if (foodRecognitionRef.current) {
+        foodRecognitionRef.current.stop();
+      }
+      if (dateRecognitionRef.current) {
+        dateRecognitionRef.current.stop();
       }
     };
   }, []);
@@ -635,6 +768,64 @@ const RegistroForm = ({ onRegistroAdded }) => {
     }
   };
 
+  const toggleFoodListening = () => {
+    if (!foodRecognitionRef.current) {
+      toast.error('Seu navegador não suporta reconhecimento de voz');
+      return;
+    }
+
+    if (isListeningFood) {
+      foodRecognitionRef.current.stop();
+      setIsListeningFood(false);
+      setIsReadyToListenFood(false);
+    } else {
+      try {
+        speak('Fale os alimentos que você consumiu. Por exemplo: "arroz, feijão e bife"');
+        setIsListeningFood(true);
+        setIsReadyToListenFood(false);
+        
+        setTimeout(() => {
+          foodRecognitionRef.current.start();
+          setIsReadyToListenFood(true);
+        }, 8000); // Alterado de 5000 para 8000 (8 segundos)
+      } catch (error) {
+        console.error('Erro ao iniciar reconhecimento:', error);
+        toast.error('Erro ao iniciar reconhecimento de voz');
+        setIsListeningFood(false);
+        setIsReadyToListenFood(false);
+      }
+    }
+  };
+
+  const toggleDateListening = () => {
+    if (!dateRecognitionRef.current) {
+      toast.error('Seu navegador não suporta reconhecimento de voz');
+      return;
+    }
+
+    if (isListeningDate) {
+      dateRecognitionRef.current.stop();
+      setIsListeningDate(false);
+      setIsReadyToListenDate(false);
+    } else {
+      try {
+        speak('Fale a data desejada. Por exemplo: "hoje", "ontem" ou "15 de março"');
+        setIsListeningDate(true);
+        setIsReadyToListenDate(false);
+        
+        setTimeout(() => {
+          dateRecognitionRef.current.start();
+          setIsReadyToListenDate(true);
+        }, 8000);
+      } catch (error) {
+        console.error('Erro ao iniciar reconhecimento:', error);
+        toast.error('Erro ao iniciar reconhecimento de voz');
+        setIsListeningDate(false);
+        setIsReadyToListenDate(false);
+      }
+    }
+  };
+
   return (
     <div className="registro-form-container">
       <div className="registro-header">
@@ -648,15 +839,47 @@ const RegistroForm = ({ onRegistroAdded }) => {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="data">Data</label>
-          <input
-            type="date"
-            id="data"
-            name="data"
-            value={formData.data}
-            onChange={handleChange}
-            max={new Date().toISOString().split('T')[0]}
-            required
-          />
+          <div className="date-input-container">
+            <input
+              type="date"
+              id="data"
+              name="data"
+              value={formData.data}
+              onChange={handleChange}
+              max={new Date().toISOString().split('T')[0]}
+              required
+            />
+            <button
+              type="button"
+              className={`voice-button ${isListeningDate ? (isReadyToListenDate ? 'listening' : 'waiting') : ''}`}
+              onClick={toggleDateListening}
+              title="Falar data"
+            >
+              {isListeningDate ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                  <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path>
+                  <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path>
+                  <line x1="12" y1="19" x2="12" y2="23"></line>
+                  <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                  <line x1="12" y1="19" x2="12" y2="23"></line>
+                  <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+              )}
+            </button>
+            <div className={`voice-status ${isListeningDate ? 'show' : ''}`}>
+              {isListeningDate 
+                ? (isReadyToListenDate 
+                    ? 'Fale a data...' 
+                    : 'Aguarde...')
+                : 'Clique para falar'}
+            </div>
+          </div>
         </div>
         
         <div className="form-group">
@@ -875,14 +1098,46 @@ const RegistroForm = ({ onRegistroAdded }) => {
                 </div>
               </div>
               
-              <textarea
-                id="descricao_refeicao"
-                name="descricao_refeicao"
-                value={formData.descricao_refeicao}
-                onChange={handleChange}
-                placeholder="Monte seu cardápio:"
-                rows="3"
-              />
+              <div className="food-input-container">
+                <textarea
+                  id="descricao_refeicao"
+                  name="descricao_refeicao"
+                  value={formData.descricao_refeicao}
+                  onChange={handleChange}
+                  placeholder="Monte seu cardápio:"
+                  rows="3"
+                />
+                <button
+                  type="button"
+                  className={`voice-button ${isListeningFood ? (isReadyToListenFood ? 'listening' : 'waiting') : ''}`}
+                  onClick={toggleFoodListening}
+                  title="Falar alimentos"
+                >
+                  {isListeningFood ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="1" y1="1" x2="23" y2="23"></line>
+                      <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path>
+                      <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path>
+                      <line x1="12" y1="19" x2="12" y2="23"></line>
+                      <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                      <line x1="12" y1="19" x2="12" y2="23"></line>
+                      <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                  )}
+                </button>
+                <div className={`voice-status ${isListeningFood ? 'show' : ''}`}>
+                  {isListeningFood 
+                    ? (isReadyToListenFood 
+                        ? 'Fale os alimentos...' 
+                        : 'Aguarde...')
+                    : 'Clique para falar'}
+                </div>
+              </div>
             </>
           ) : null}
         </div>
@@ -892,7 +1147,14 @@ const RegistroForm = ({ onRegistroAdded }) => {
           className="submit-button"
           disabled={loading}
         >
-          {loading ? 'Salvando...' : 'Salvar Registro'}
+          {loading ? 'Salvando...' : (
+            <>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              Salvar Registro
+            </>
+          )}
         </button>
       </form>
     </div>
