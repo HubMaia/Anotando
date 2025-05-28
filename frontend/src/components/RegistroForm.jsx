@@ -47,6 +47,77 @@ const RegistroForm = ({ onRegistroAdded }) => {
     { value: 'Depois', label: 'Depois (Após comer)' }
   ];
 
+  const popularFoods = {
+    'Café da Manhã': [
+      'Pão francês',
+      'Café com leite',
+      'Manteiga',
+      'Queijo',
+      'Presunto',
+      'Ovos',
+      'Frutas',
+      'Suco de laranja',
+      'Iogurte',
+      'Granola'
+    ],
+    'Almoço': [
+      'Arroz',
+      'Feijão',
+      'Bife',
+      'Frango',
+      'Salada',
+      'Batata',
+      'Macarrão',
+      'Farofa',
+      'Couve',
+      'Peixe',
+      'Carne Moída',
+      'Omelete',
+      'Legumes',
+      'Purê de Batata',
+      'Sopa',
+      'Risoto',
+      'Lasanha',
+      'Strogonoff',
+      'Carne Assada',
+      'Frango Assado'
+    ],
+    'Café da Tarde': [
+      'Bolo',
+      'Café',
+      'Pão de queijo',
+      'Biscoito',
+      'Sanduíche',
+      'Suco',
+      'Vitamina',
+      'Iogurte',
+      'Frutas',
+      'Chá'
+    ],
+    'Jantar': [
+      'Sopa',
+      'Salada',
+      'Sanduíche',
+      'Pizza',
+      'Lasanha',
+      'Risoto',
+      'Peixe',
+      'Frango',
+      'Arroz',
+      'Macarrão',
+      'Carne Moída',
+      'Omelete',
+      'Legumes',
+      'Purê de Batata',
+      'Bife',
+      'Feijão',
+      'Farofa',
+      'Couve',
+      'Carne Assada',
+      'Frango Assado'
+    ]
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -134,6 +205,43 @@ const RegistroForm = ({ onRegistroAdded }) => {
         horario: `${customHorarioText} - ${value}`
       });
     }
+  };
+
+  const handleFoodItemClick = (foodItem) => {
+    const currentDescription = formData.descricao_refeicao;
+    const newDescription = currentDescription 
+      ? `${currentDescription}, ${foodItem}`
+      : foodItem;
+    
+    setFormData({
+      ...formData,
+      descricao_refeicao: newDescription
+    });
+  };
+
+  const getCurrentMealType = () => {
+    if (!formData.horario) return null;
+    
+    // Check if it's a custom time with "Depois"
+    if (customHorarioTipo === 'Depois') {
+      return 'Todos';
+    }
+    
+    if (formData.horario.includes('Cafe - Depois')) return 'Café da Manhã';
+    if (formData.horario.includes('Almoco - Depois')) return 'Almoço';
+    if (formData.horario.includes('Cafe-Tarde - Depois')) return 'Café da Tarde';
+    if (formData.horario.includes('Janta - Depois')) return 'Jantar';
+    
+    return null;
+  };
+
+  const getAllFoodItems = () => {
+    return [
+      ...popularFoods['Café da Manhã'],
+      ...popularFoods['Almoço'],
+      ...popularFoods['Café da Tarde'],
+      ...popularFoods['Jantar']
+    ];
   };
 
   const handleSubmit = async (e) => {
@@ -315,23 +423,48 @@ const RegistroForm = ({ onRegistroAdded }) => {
         </div>
         
         <div className="form-group">
-          <label htmlFor="descricao_refeicao">
-            {(formData.horario.includes('Antes') || customHorarioTipo === 'Antes')
-              ? 'Você está em jejum, não é possível anotar refeição'
-              : 'Quer anotar o que comeu?'}
-          </label>
-          <textarea
-            id="descricao_refeicao"
-            name="descricao_refeicao"
-            value={formData.descricao_refeicao}
-            onChange={handleChange}
-            placeholder={(formData.horario.includes('Antes') || customHorarioTipo === 'Antes')
-              ? 'Ooops!'
-              : 'Escreva aqui sua refeição'}
-            rows="3"
-            disabled={formData.horario.includes('Antes') || customHorarioTipo === 'Antes'}
-            className={(formData.horario.includes('Antes') || customHorarioTipo === 'Antes') ? 'disabled-textarea' : ''}
-          />
+          {(!formData.horario.includes('Antes') && customHorarioTipo !== 'Antes' && formData.horario) || 
+           (isCustomHorario && customHorarioTipo === 'Depois') ? (
+            <>
+              <div className="popular-foods-container">
+                <h4>O que você comeu nesse horário?</h4>
+                <div className="popular-foods-list">
+                  {getCurrentMealType() && (
+                    getCurrentMealType() === 'Todos' 
+                      ? getAllFoodItems().map((food, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            className="food-item-button"
+                            onClick={() => handleFoodItemClick(food)}
+                          >
+                            {food}
+                          </button>
+                        ))
+                      : popularFoods[getCurrentMealType()].map((food, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            className="food-item-button"
+                            onClick={() => handleFoodItemClick(food)}
+                          >
+                            {food}
+                          </button>
+                        ))
+                  )}
+                </div>
+              </div>
+              
+              <textarea
+                id="descricao_refeicao"
+                name="descricao_refeicao"
+                value={formData.descricao_refeicao}
+                onChange={handleChange}
+                placeholder="Monte seu cardápio:"
+                rows="3"
+              />
+            </>
+          ) : null}
         </div>
         
         <button 
