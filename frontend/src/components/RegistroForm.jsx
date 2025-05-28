@@ -11,6 +11,7 @@ import cafeTardeJejumImage from '../assets/images/CAFE-DA-TARDE-JEJUM.png';
 import jantaImage from '../assets/images/JANTA.png';
 import jantaJejumImage from '../assets/images/JANTA-JEJUM.png';
 import novoImage from '../assets/images/NOVO.png';
+import novoJejumImage from '../assets/images/NOVO-JEJUM.png';
 import './RegistroForm.css';
 
 const RegistroForm = ({ onRegistroAdded }) => {
@@ -340,19 +341,46 @@ const RegistroForm = ({ onRegistroAdded }) => {
                 maxLength={50}
                 required
               />
-              <select
-                value={customHorarioTipo}
-                onChange={handleCustomHorarioTipoChange}
-                className="horario-tipo-select"
-                required
-              >
-                <option value="">Selecione</option>
-                {tiposHorario.map(tipo => (
-                  <option key={tipo.value} value={tipo.value}>
-                    {tipo.label}
-                  </option>
-                ))}
-              </select>
+              <div className="custom-select" ref={dropdownRef}>
+                <div 
+                  className="select-selected"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                >
+                  {customHorarioTipo ? (
+                    <div className="selected-option">
+                      <img 
+                        src={customHorarioTipo === 'Antes' ? novoJejumImage : novoImage} 
+                        alt="" 
+                        className="time-icon" 
+                      />
+                      <span>{tiposHorario.find(t => t.value === customHorarioTipo)?.label}</span>
+                    </div>
+                  ) : (
+                    'Selecione'
+                  )}
+                </div>
+                {isDropdownOpen && (
+                  <div className="select-items">
+                    {tiposHorario.map(tipo => (
+                      <div
+                        key={tipo.value}
+                        className="select-item"
+                        onClick={() => {
+                          handleCustomHorarioTipoChange({ target: { value: tipo.value } });
+                          setIsDropdownOpen(false);
+                        }}
+                      >
+                        <img 
+                          src={tipo.value === 'Antes' ? novoJejumImage : novoImage} 
+                          alt="" 
+                          className="time-icon" 
+                        />
+                        <span>{tipo.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
               <button
                 type="button"
                 className="back-button"

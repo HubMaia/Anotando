@@ -69,6 +69,7 @@
   background-color: white;
   cursor: pointer;
   transition: border-color 0.3s;
+  color: #2c3e50;
 }
 
 .select-selected:hover {
@@ -97,10 +98,12 @@
   align-items: center;
   gap: 0.5rem;
   transition: background-color 0.2s;
+  color: #2c3e50;
 }
 
 .select-item:hover {
-  background-color: #f8f9fa;
+  background-color: #03c596;
+  color: white;
 }
 
 .selected-option {
@@ -145,11 +148,28 @@
   background-color: white;
   cursor: pointer;
   transition: border-color 0.3s;
+  color: #2c3e50;
 }
 
 .horario-tipo-select:focus {
   outline: none;
   border-color: #03c596;
+}
+
+.horario-tipo-select option {
+  padding: 0.5rem;
+  background-color: white;
+  color: #2c3e50;
+}
+
+.horario-tipo-select option:hover {
+  background-color: #03c596;
+  color: white;
+}
+
+.horario-tipo-select option:checked {
+  background-color: #03c596;
+  color: white;
 }
 
 .back-button {
