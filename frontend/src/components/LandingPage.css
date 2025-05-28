@@ -14,9 +14,11 @@
 }
 
 .landing-logo {
-  width: 36px;
-  height: 36px;
-  margin-right: 0.5rem;
+  height: 48px;
+  width: auto;
+  margin-right: 0.75rem;
+  object-fit: contain;
+  display: block;
 }
 
 .landing-brand {
@@ -52,9 +54,9 @@
 }
 
 .landing-btn {
-  background: transparent;
-  color: #111;
-  border: 2px solid #ffe600;
+  background: #03c596;
+  color: #fff;
+  border: none;
   padding: 0.9rem 2.5rem;
   font-size: 1.1rem;
   font-weight: 700;
@@ -64,8 +66,8 @@
 }
 
 .landing-btn:hover {
-  background: #ffe600;
-  color: #111;
+  background: #02a37d;
+  color: #fff;
 }
 
 .landing-illustration img {
@@ -74,6 +76,20 @@
   border-radius: 18px;
   box-shadow: 0 4px 32px rgba(0,0,0,0.08);
   background: #fff;
+}
+
+.landing-pwa-info {
+  font-size: 0.98rem;
+  color: #7f8c8d;
+  margin-top: 0.7rem;
+  font-style: italic;
+}
+
+.landing-footer {
+  width: 100%;
+  text-align: center;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
 }
 
 @media (max-width: 900px) {
