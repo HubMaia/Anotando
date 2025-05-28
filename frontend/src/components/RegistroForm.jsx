@@ -282,7 +282,7 @@ const RegistroForm = ({ onRegistroAdded }) => {
         
         // Verifica se mencionou "depois" primeiro, depois "antes"
         const isDepois = transcript.includes('depois') || transcript.includes('após') || transcript.includes('apos');
-        const isAntes = !isDepois && (transcript.includes('antes') || transcript.includes('jejum'));
+        const isAntes = !isDepois && (transcript.includes('antes') || transcript.includes('gêjum'));
         
         // Procura por palavras-chave dos horários
         let horarioEncontrado = null;
@@ -297,6 +297,7 @@ const RegistroForm = ({ onRegistroAdded }) => {
           if (horarioEncontrado.value === 'custom') {
             setIsCustomHorario(true);
             speak('Vou abrir o horário personalizado para você. Fale o horário ou período desejado.');
+            toast.info('Horário personalizado selecionado');
           } else {
             const horarioValue = horarioEncontrado.value.split(' - ')[0];
             const horarioCompleto = `${horarioValue} - ${isAntes ? 'Antes' : 'Depois'}`;
@@ -306,18 +307,19 @@ const RegistroForm = ({ onRegistroAdded }) => {
             }));
             // Extraindo apenas o nome da refeição do label (removendo o status entre parênteses)
             const nomeRefeicao = horarioEncontrado.label.split(' (')[0].toLowerCase();
-            speak(`Anotei ${nomeRefeicao} ${isAntes ? 'em jejum' : 'depois do jejum'}. Se precisar corrigir, é só clicar no microfone novamente.`);
+            speak(`Anotei ${nomeRefeicao} ${isAntes ? 'em gêjum' : 'depois do gêjum'}. Se precisar corrigir, é só clicar no microfone novamente.`);
+            toast.success(`Horário registrado: ${nomeRefeicao} ${isAntes ? 'em gêjum' : 'depois do gêjum'}`);
           }
         } else {
           // Limpa o texto do horário personalizado
           let customText = transcript
-            .replace(/em jejum/g, '')
-            .replace(/depois do jejum/g, '')
+            .replace(/em gêjum/g, '')
+            .replace(/depois do gêjum/g, '')
             .replace(/antes/g, '')
             .replace(/depois/g, '')
             .replace(/ap[oó]s/g, '')
             .replace(/apos/g, '')
-            .replace(/jejum/g, '')
+            .replace(/gêjum/g, '')
             .replace(/  +/g, ' ')
             .trim();
           setIsCustomHorario(true);
@@ -327,7 +329,8 @@ const RegistroForm = ({ onRegistroAdded }) => {
             ...prev,
             horario: `${customText}${isAntes ? ' - Antes' : (isDepois ? ' - Depois' : '')}`
           }));
-          speak(`Anotei ${customText} ${isAntes ? 'em jejum' : (isDepois ? 'depois do jejum' : '')}. Se precisar corrigir, é só clicar no microfone novamente.`);
+          speak(`Anotei ${customText} ${isAntes ? 'em gêjum' : (isDepois ? 'depois do gêjum' : '')}. Se precisar corrigir, é só clicar no microfone novamente.`);
+          toast.success(`Horário personalizado registrado: ${customText} ${isAntes ? 'em gêjum' : (isDepois ? 'depois do gêjum' : '')}`);
         }
         
         setIsListeningPredefined(false);
@@ -374,6 +377,7 @@ const RegistroForm = ({ onRegistroAdded }) => {
         }));
 
         speak(`Anotei os alimentos: ${alimentos}. Se precisar corrigir, é só clicar no microfone novamente.`);
+        toast.success('Alimentos registrados com sucesso!');
         setIsListeningFood(false);
         setIsReadyToListenFood(false);
       };
@@ -446,9 +450,11 @@ const RegistroForm = ({ onRegistroAdded }) => {
               data: data
             }));
             speak(`Anotei a data ${data.split('-').reverse().join('/')}. Se precisar corrigir, é só clicar no microfone novamente.`);
+            toast.success(`Data registrada: ${data.split('-').reverse().join('/')}`);
           }
         } else {
           speak('Não consegui entender a data. Você pode dizer "hoje", "ontem" ou uma data específica como "15 de março". Vamos tentar de novo?');
+          toast.error('Não foi possível entender a data. Tente novamente.');
         }
         
         setIsListeningDate(false);
@@ -592,6 +598,7 @@ const RegistroForm = ({ onRegistroAdded }) => {
       ...formData,
       descricao_refeicao: newDescription
     });
+    toast.success(`${foodItem} adicionado à lista!`);
   };
 
   const getCurrentMealType = () => {
@@ -695,12 +702,14 @@ const RegistroForm = ({ onRegistroAdded }) => {
         // Mostra que está aguardando
         setIsListening(true);
         setIsReadyToListen(false);
+        toast.info('Aguarde...');
         
         // Pequeno delay para a pergunta ser feita antes de começar a gravar
         setTimeout(() => {
           recognitionRef.current.start();
           setIsReadyToListen(true);
-        }, 3000); // 3 segundos de delay
+          toast.info('Fale o valor da sua glicemia...');
+        }, 3000);
       } catch (error) {
         console.error('Erro ao iniciar reconhecimento:', error);
         toast.error('Erro ao iniciar reconhecimento de voz');
@@ -722,14 +731,16 @@ const RegistroForm = ({ onRegistroAdded }) => {
       setIsReadyToListenTime(false);
     } else {
       try {
-        speak('Fale o horário ou período e se é em jejum ou depois do jejum. Por exemplo: "madrugada em jejum" ou "manhã depois do jejum"');
+        speak('Fale o horário ou período e se é em gêjum ou depois do gêjum. Por exemplo: "madrugada em gêjum" ou "manhã depois do gêjum"');
         setIsListeningTime(true);
         setIsReadyToListenTime(false);
+        toast.info('Aguarde...');
         
         setTimeout(() => {
           timeRecognitionRef.current.start();
           setIsReadyToListenTime(true);
-        }, 11000); // Alterado de 9000 para 11000 (11 segundos)
+          toast.info('Fale o horário ou período...');
+        }, 11000);
       } catch (error) {
         console.error('Erro ao iniciar reconhecimento:', error);
         toast.error('Erro ao iniciar reconhecimento de voz');
@@ -751,13 +762,15 @@ const RegistroForm = ({ onRegistroAdded }) => {
       setIsReadyToListenPredefined(false);
     } else {
       try {
-        speak('Fale qual refeição e se é em jejum ou depois do jejum. Por exemplo: "café da manhã em jejum" ou "almoço depois do jejum"');
+        speak('Fale qual refeição e se é em gêjum ou depois do gêjum. Por exemplo: "café da manhã em gêjum" ou "almoço depois do gêjum"');
         setIsListeningPredefined(true);
         setIsReadyToListenPredefined(false);
+        toast.info('Aguarde...');
         
         setTimeout(() => {
           predefinedRecognitionRef.current.start();
           setIsReadyToListenPredefined(true);
+          toast.info('Fale qual refeição...');
         }, 11000);
       } catch (error) {
         console.error('Erro ao iniciar reconhecimento:', error);
@@ -783,11 +796,13 @@ const RegistroForm = ({ onRegistroAdded }) => {
         speak('Fale os alimentos que você consumiu. Por exemplo: "arroz, feijão e bife"');
         setIsListeningFood(true);
         setIsReadyToListenFood(false);
+        toast.info('Aguarde...');
         
         setTimeout(() => {
           foodRecognitionRef.current.start();
           setIsReadyToListenFood(true);
-        }, 8000); // Alterado de 5000 para 8000 (8 segundos)
+          toast.info('Fale os alimentos...');
+        }, 8000);
       } catch (error) {
         console.error('Erro ao iniciar reconhecimento:', error);
         toast.error('Erro ao iniciar reconhecimento de voz');
@@ -812,10 +827,12 @@ const RegistroForm = ({ onRegistroAdded }) => {
         speak('Fale a data desejada. Por exemplo: "hoje", "ontem" ou "15 de março"');
         setIsListeningDate(true);
         setIsReadyToListenDate(false);
+        toast.info('Aguarde...');
         
         setTimeout(() => {
           dateRecognitionRef.current.start();
           setIsReadyToListenDate(true);
+          toast.info('Fale a data...');
         }, 8000);
       } catch (error) {
         console.error('Erro ao iniciar reconhecimento:', error);
@@ -857,16 +874,16 @@ const RegistroForm = ({ onRegistroAdded }) => {
             >
               {isListeningDate ? (
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="1" y1="1" x2="23" y2="23"></line>
-                  <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path>
-                  <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path>
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
                   <line x1="12" y1="19" x2="12" y2="23"></line>
                   <line x1="8" y1="23" x2="16" y2="23"></line>
                 </svg>
               ) : (
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                  <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path>
+                  <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path>
                   <line x1="12" y1="19" x2="12" y2="23"></line>
                   <line x1="8" y1="23" x2="16" y2="23"></line>
                 </svg>
@@ -905,16 +922,16 @@ const RegistroForm = ({ onRegistroAdded }) => {
                 >
                   {isListeningTime ? (
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="1" y1="1" x2="23" y2="23"></line>
-                      <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path>
-                      <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path>
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
                       <line x1="12" y1="19" x2="12" y2="23"></line>
                       <line x1="8" y1="23" x2="16" y2="23"></line>
                     </svg>
                   ) : (
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                      <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                      <line x1="1" y1="1" x2="23" y2="23"></line>
+                      <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path>
+                      <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path>
                       <line x1="12" y1="19" x2="12" y2="23"></line>
                       <line x1="8" y1="23" x2="16" y2="23"></line>
                     </svg>
@@ -970,16 +987,16 @@ const RegistroForm = ({ onRegistroAdded }) => {
               >
                 {isListeningPredefined ? (
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                    <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path>
-                    <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path>
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
                     <line x1="12" y1="19" x2="12" y2="23"></line>
                     <line x1="8" y1="23" x2="16" y2="23"></line>
                   </svg>
                 ) : (
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                    <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path>
+                    <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path>
                     <line x1="12" y1="19" x2="12" y2="23"></line>
                     <line x1="8" y1="23" x2="16" y2="23"></line>
                   </svg>
@@ -1035,16 +1052,16 @@ const RegistroForm = ({ onRegistroAdded }) => {
             >
               {isListening ? (
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="1" y1="1" x2="23" y2="23"></line>
-                  <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path>
-                  <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path>
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
                   <line x1="12" y1="19" x2="12" y2="23"></line>
                   <line x1="8" y1="23" x2="16" y2="23"></line>
                 </svg>
               ) : (
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                  <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path>
+                  <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path>
                   <line x1="12" y1="19" x2="12" y2="23"></line>
                   <line x1="8" y1="23" x2="16" y2="23"></line>
                 </svg>
@@ -1115,9 +1132,8 @@ const RegistroForm = ({ onRegistroAdded }) => {
                 >
                   {isListeningFood ? (
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="1" y1="1" x2="23" y2="23"></line>
-                      <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path>
-                      <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path>
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
                       <line x1="12" y1="19" x2="12" y2="23"></line>
                       <line x1="8" y1="23" x2="16" y2="23"></line>
                     </svg>

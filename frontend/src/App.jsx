@@ -9,6 +9,7 @@ import Historico from './components/Historico';
 import UserProfile from './components/UserProfile';
 import Header from './components/header';
 import logo from './assets/images/ANOTANDO-LOGO.png';
+import LandingPage from './components/LandingPage';
 import './App.css';
 
 // Componente para a página de registro de usuário
@@ -254,7 +255,7 @@ const App = () => {
         />
         <Route 
           path="/" 
-          element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} 
+          element={<LandingPage />} 
         />
       </Routes>
     </Router>
