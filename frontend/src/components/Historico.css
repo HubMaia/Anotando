@@ -45,21 +45,45 @@
 .meal-carousel {
   display: flex;
   justify-content: center;
-  gap: 2rem;
+  gap: 1rem;
   margin-bottom: 1.5rem;
   padding: 1rem;
   background-color: #f8f9fa;
   border-radius: 8px;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+}
+
+.meal-pair {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  min-width: fit-content;
 }
 
 .meal-image {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 4px;
 }
 
 .meal-image:hover {
+  transform: scale(1.1);
+}
+
+.meal-image.selected {
+  border-color: #03c596;
+  background-color: rgba(3, 197, 150, 0.1);
   transform: scale(1.1);
 }
 
@@ -299,4 +323,25 @@
     width: 100%;
     margin-bottom: 0.5rem;
   }
+}
+
+.header-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.limpar-filtro-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.limpar-filtro-button:hover {
+  background-color: #c0392b;
 } 

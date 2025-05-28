@@ -250,4 +250,62 @@
 
 .disabled-textarea::placeholder {
   color: #95a5a6;
+}
+
+.popular-foods-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.popular-foods-container h4 {
+  color: #2c3e50;
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+}
+
+.meal-description-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #34495e;
+  font-size: 1rem;
+}
+
+.popular-foods-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.food-item-button {
+  background-color: white;
+  border: 1px solid #03c596;
+  color: #03c596;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.food-item-button:hover {
+  background-color: #03c596;
+  color: white;
+}
+
+.food-item-button:active {
+  transform: scale(0.95);
+}
+
+.select-time-message {
+  text-align: center;
+  color: #7f8c8d;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 4px;
+  border: 1px dashed #ddd;
+  font-style: italic;
 } 

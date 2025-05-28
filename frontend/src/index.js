@@ -11,7 +11,7 @@ root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
-);
+); 
 
 // Registro do Service Worker
 if ('serviceWorker' in navigator) {

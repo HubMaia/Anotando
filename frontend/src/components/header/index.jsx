@@ -7,7 +7,9 @@ const Header = ({ user, onLogout }) => {
   return (
     <header className="dashboard-header">
       <div className="app-title">
+        <Link to="/dashboard">
         <img src={logo} alt="Anotando Logo" className="app-logo" />
+        </Link>
       </div>
       
       {user && (

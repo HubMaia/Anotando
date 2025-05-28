@@ -169,4 +169,45 @@ router.get('/periodo/:dataInicio/:dataFim', async (req, res) => {
   }
 });
 
+// Buscar registros por horário
+router.get('/horario/:horario', async (req, res) => {
+  try {
+    const { horario } = req.params;
+    const userId = req.userData.userId;
+    
+    let query;
+    let params;
+
+    if (horario === 'custom') {
+      // Para horários personalizados, buscamos registros que não seguem o padrão
+      query = `
+        SELECT * FROM registros 
+        WHERE usuario_id = ? 
+        AND horario NOT LIKE 'Cafe%' 
+        AND horario NOT LIKE 'Almoco%' 
+        AND horario NOT LIKE 'Cafe-Tarde%' 
+        AND horario NOT LIKE 'Janta%'
+        ORDER BY data DESC
+      `;
+      params = [userId];
+    } else {
+      // Para horários padrão, buscamos exatamente o horário especificado
+      query = `
+        SELECT * FROM registros 
+        WHERE usuario_id = ? 
+        AND horario = ? 
+        ORDER BY data DESC
+      `;
+      params = [userId, horario];
+    }
+    
+    const [registros] = await pool.query(query, params);
+    
+    res.status(200).json({ registros });
+  } catch (error) {
+    console.error('Erro ao buscar registros por horário:', error);
+    res.status(500).json({ message: 'Erro ao buscar registros por horário' });
+  }
+});
+
 module.exports = router; 

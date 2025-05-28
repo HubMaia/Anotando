@@ -7,6 +7,10 @@ import cafeTardeImage from '../assets/images/CAFE-DA-TARDE.png';
 import almocoImage from '../assets/images/ALMOÇO.png';
 import jantaImage from '../assets/images/JANTA.png';
 import novoImage from '../assets/images/NOVO.png';
+import cafeJejumImage from '../assets/images/CAFE-DA-MANHA-JEJUM.png';
+import almocoJejumImage from '../assets/images/ALMOÇO-JEJUM.png';
+import cafeTardeJejumImage from '../assets/images/CAFE-DA-TARDE-JEJUM.png';
+import jantaJejumImage from '../assets/images/JANTA-JEJUM.png';
 import './Historico.css';
 
 const Historico = () => {
@@ -15,7 +19,8 @@ const Historico = () => {
   const [error, setError] = useState('');
   const [filtro, setFiltro] = useState({
     dataInicio: '',
-    dataFim: ''
+    dataFim: '',
+    horario: ''
   });
   const [selectedDescription, setSelectedDescription] = useState(null);
 
@@ -289,24 +294,132 @@ const Historico = () => {
     }
   };
 
+  const handleImageClick = (horario) => {
+    setFiltro(prev => ({
+      ...prev,
+      horario: horario
+    }));
+    filtrarPorHorario(horario);
+  };
+
+  const filtrarPorHorario = async (horario) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        setError('Usuário não autenticado');
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(
+        `http://localhost:5000/api/registros/horario/${horario}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      
+      setRegistros(response.data.registros);
+      setError('');
+    } catch (error) {
+      setError(
+        error.response?.data?.message || 
+        'Erro ao filtrar registros'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const limparFiltroHorario = () => {
+    setFiltro(prev => ({
+      ...prev,
+      horario: ''
+    }));
+    carregarRegistros();
+  };
+
   return (
     <div className="historico-container">
       <div className="historico-header">
         <h3>Histórico de Registros</h3>
-        <button 
-          className="pdf-button"
-          onClick={gerarPDF}
-          disabled={loading || registros.length === 0}
-        >
-          Gerar PDF
-        </button>
+        <div className="header-buttons">
+          {filtro.horario && (
+            <button 
+              className="limpar-filtro-button"
+              onClick={limparFiltroHorario}
+            >
+              Limpar Filtro
+            </button>
+          )}
+          <button 
+            className="pdf-button"
+            onClick={gerarPDF}
+            disabled={loading || registros.length === 0}
+          >
+            Gerar PDF
+          </button>
+        </div>
       </div>
       
       <div className="meal-carousel">
-        <img src={cafeImage} alt="Café da Manhã" className="meal-image" />
-        <img src={almocoImage} alt="Almoço" className="meal-image" />
-        <img src={cafeTardeImage} alt="Café da Tarde" className="meal-image" />
-        <img src={jantaImage} alt="Janta" className="meal-image" />
+        <img 
+          src={cafeJejumImage} 
+          alt="Café da Manhã (Jejum)" 
+          className={`meal-image ${filtro.horario === 'Cafe - Antes' ? 'selected' : ''}`}
+          onClick={() => handleImageClick('Cafe - Antes')}
+        />
+        <img 
+          src={cafeImage} 
+          alt="Café da Manhã" 
+          className={`meal-image ${filtro.horario === 'Cafe - Depois' ? 'selected' : ''}`}
+          onClick={() => handleImageClick('Cafe - Depois')}
+        />
+        <img 
+          src={almocoJejumImage} 
+          alt="Almoço (Jejum)" 
+          className={`meal-image ${filtro.horario === 'Almoco - Antes' ? 'selected' : ''}`}
+          onClick={() => handleImageClick('Almoco - Antes')}
+        />
+        <img 
+          src={almocoImage} 
+          alt="Almoço" 
+          className={`meal-image ${filtro.horario === 'Almoco - Depois' ? 'selected' : ''}`}
+          onClick={() => handleImageClick('Almoco - Depois')}
+        />
+        <img 
+          src={cafeTardeJejumImage} 
+          alt="Café da Tarde (Jejum)" 
+          className={`meal-image ${filtro.horario === 'Cafe-Tarde - Antes' ? 'selected' : ''}`}
+          onClick={() => handleImageClick('Cafe-Tarde - Antes')}
+        />
+        <img 
+          src={cafeTardeImage} 
+          alt="Café da Tarde" 
+          className={`meal-image ${filtro.horario === 'Cafe-Tarde - Depois' ? 'selected' : ''}`}
+          onClick={() => handleImageClick('Cafe-Tarde - Depois')}
+        />
+        <img 
+          src={jantaJejumImage} 
+          alt="Janta (Jejum)" 
+          className={`meal-image ${filtro.horario === 'Janta - Antes' ? 'selected' : ''}`}
+          onClick={() => handleImageClick('Janta - Antes')}
+        />
+        <img 
+          src={jantaImage} 
+          alt="Janta" 
+          className={`meal-image ${filtro.horario === 'Janta - Depois' ? 'selected' : ''}`}
+          onClick={() => handleImageClick('Janta - Depois')}
+        />
+        <img 
+          src={novoImage} 
+          alt="Horário Personalizado" 
+          className={`meal-image ${filtro.horario === 'custom' ? 'selected' : ''}`}
+          onClick={() => handleImageClick('custom')}
+        />
       </div>
       
       <div className="filtro-container">
