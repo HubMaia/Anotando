@@ -575,3 +575,10 @@
 .date-input-container .voice-status.show {
   opacity: 1;
 } 
+
+
+@media (max-width: 450px){
+  .registro-form-container{
+    max-width: 400px;
+  }
+}

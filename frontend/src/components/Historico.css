@@ -345,3 +345,31 @@
 .limpar-filtro-button:hover {
   background-color: #c0392b;
 } 
+
+
+
+@media (max-width: 450px) {
+  .filtro-campos {
+    flex-direction: column;
+  }
+
+  .filtro-campos .form-group {
+    min-width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .filtro-button,
+  .limpar-button {
+    width: 50%;
+    margin-bottom: 0.5rem;
+  }
+
+  .limpar-filtro-button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  .historico-container{
+    max-width: 425px;
+    min-width: 400px;
+  }
+}
