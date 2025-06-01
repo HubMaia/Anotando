@@ -649,7 +649,7 @@ const RegistroForm = ({ onRegistroAdded }) => {
       }
 
       const response = await axios.post(
-        'http://localhost:5000/api/registros',
+        '/api/registros',
         formData,
         {
           headers: {

@@ -1,13 +1,12 @@
-# Dockerfile para o frontend React + Apache2
+# Dockerfile para o frontend React
 FROM node:18 as build
 WORKDIR /app
-COPY frontend/package*.json ./
+COPY package*.json ./
 RUN npm install
-COPY frontend/ .
+COPY . .
 RUN npm run build
 
-FROM ubuntu:22.04
-RUN apt-get update && apt-get install -y apache2 && rm -rf /var/lib/apt/lists/*
-COPY --from=build /app/build/ /var/www/html/
+FROM nginx:alpine
+COPY --from=build /app/build /usr/share/nginx/html
 EXPOSE 80
-CMD ["apachectl", "-D", "FOREGROUND"]
+CMD ["nginx", "-g", "daemon off;"]

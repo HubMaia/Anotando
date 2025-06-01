@@ -41,7 +41,7 @@ const Historico = () => {
       }
       
       const response = await axios.get(
-        'http://localhost:5000/api/registros',
+        '/api/registros',
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -88,7 +88,7 @@ const Historico = () => {
       }
       
       const response = await axios.get(
-        `http://localhost:5000/api/registros/periodo/${filtro.dataInicio}/${filtro.dataFim}`,
+        `/api/registros/periodo/${filtro.dataInicio}/${filtro.dataFim}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -122,7 +122,7 @@ const Historico = () => {
       }
       
       await axios.delete(
-        `http://localhost:5000/api/registros/${id}`,
+        `/api/registros/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -314,7 +314,7 @@ const Historico = () => {
       }
 
       const response = await axios.get(
-        `http://localhost:5000/api/registros/horario/${horario}`,
+        `/api/registros/${horario}`,
         {
           headers: {
             Authorization: `Bearer ${token}`

@@ -29,7 +29,7 @@ const UserProfile = ({ setIsAuthenticated }) => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const response = await axios.get('http://localhost:5000/api/auth/me', {
+      const response = await axios.get('/api/auth/me', {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -78,7 +78,7 @@ const UserProfile = ({ setIsAuthenticated }) => {
         idade
       };
 
-      await axios.put('http://localhost:5000/api/auth/update', dadosAtualizados, {
+      await axios.put('/api/auth/update', dadosAtualizados, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -99,7 +99,7 @@ const UserProfile = ({ setIsAuthenticated }) => {
       if (!token) throw new Error('Token não encontrado');
 
       console.log('Enviando requisição para excluir conta...');
-      const response = await axios.delete('http://localhost:5000/api/auth/delete', {
+      const response = await axios.delete('/api/auth/delete', {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'

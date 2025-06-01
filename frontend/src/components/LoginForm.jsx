@@ -45,7 +45,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
           return;
         }
 
-        const response = await axios.post('http://localhost:5000/api/auth/register', {
+        const response = await axios.post('/api/auth/register', {
           nome: formData.nome,
           email: formData.email,
           senha: formData.senha,
@@ -63,7 +63,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
         }
       } else {
         // Login
-        const response = await axios.post('http://localhost:5000/api/auth/login', {
+        const response = await axios.post('/api/auth/login', {
           email: formData.email,
           senha: formData.senha
         });

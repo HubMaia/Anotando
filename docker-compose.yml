@@ -1,39 +1,55 @@
-version: '3.8'
 services:
   db:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: anotando
-      MYSQL_USER: anotando_user
-      MYSQL_PASSWORD: anotando_pass
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: anotandodb
     ports:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
       - ./backend/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 30s
 
   backend:
-    build: ./backend
+    build:
+      context: . # <--- Contexto é a raiz do projeto "Anotando"
+      dockerfile: backend/Dockerfile # <--- Dockerfile está em 'backend/Dockerfile'
     restart: always
     environment:
       DB_HOST: db
-      DB_USER: anotando_user
-      DB_PASSWORD: anotando_pass
-      DB_NAME: anotando
+      DB_USER: root
+      DB_PASSWORD: 1234
+      DB_NAME: anotandodb
+      JWT_SECRET: JWT_SECRET
     ports:
-      - "5000:5000"
+      - "3000:3000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app # Isso pode ser para desenvolvimento; para produção, você só copiaria os arquivos
 
   frontend:
-    build: ./frontend
+    build:
+      context: . # <--- CONTEXTO TAMBÉM É A RAIZ DO PROJETO "Anotando"
+      dockerfile: frontend/Dockerfile # <--- Dockerfile está em 'frontend/Dockerfile'
     restart: always
     ports:
       - "80:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_started
+    volumes:
+      - ./frontend:/app # Para o desenvolvimento, mapeia a pasta do frontend
+    # Se for para um ambiente de produção, este volume pode não ser necessário,
+    # pois a etapa de build já copia os arquivos para a imagem final do Apache.
 
 volumes:
   db_data:
