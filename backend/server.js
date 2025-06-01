@@ -6,7 +6,7 @@ const registrosRouter = require('./routes/registros');
 require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 3306;
+const PORT = process.env.PORT || 5000;
 
 // Middlewares
 app.use(cors());
