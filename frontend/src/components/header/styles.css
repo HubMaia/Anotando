@@ -34,7 +34,7 @@
 }
 
 .search-form {
-  display: flex;
+  display: none;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
@@ -43,10 +43,12 @@
 }
 
 .search-form:focus-within {
+  display: none;
   background-color: rgba(255, 255, 255, 0.2);
 }
 
 .search-input {
+  display: none;
   flex: 1;
   background: none;
   border: none;
@@ -57,10 +59,12 @@
 }
 
 .search-input::placeholder {
+  display: none;
   color: rgba(255, 255, 255, 0.7);
 }
 
 .search-button {
+  display: none;
   align-items: end;
   background: none;
   border: none;

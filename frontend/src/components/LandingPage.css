@@ -54,6 +54,7 @@
 }
 
 .landing-btn {
+  text-decoration: none;
   background: #03c596;
   color: #fff;
   border: none;
