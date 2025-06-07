@@ -4,6 +4,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoginForm from './components/LoginForm';
+import RegisterForm from './components/RegisterForm';
 import RegistroForm from './components/RegistroForm';
 import Historico from './components/Historico';
 import UserProfile from './components/UserProfile';
@@ -11,137 +12,6 @@ import Header from './components/header';
 import logo from './assets/images/ANOTANDO-LOGO.png';
 import LandingPage from './components/LandingPage';
 import './App.css';
-
-// Componente para a página de registro de usuário
-const RegisterPage = () => {
-  const [formData, setFormData] = useState({
-    nome: '',
-    email: '',
-    senha: '',
-    confirmarSenha: ''
-  });
-  const [loading, setLoading] = useState(false);
-  
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-  
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    // Validações básicas
-    if (formData.senha !== formData.confirmarSenha) {
-      toast.error('As senhas não conferem');
-      setLoading(false);
-      return;
-    }
-    
-    try {
-      const response = await axios.post('/api/auth/register', {
-        nome: formData.nome,
-        email: formData.email,
-        senha: formData.senha
-      });
-      
-      toast.success('Conta criada com sucesso! Você já pode fazer login.');
-      setFormData({
-        nome: '',
-        email: '',
-        senha: '',
-        confirmarSenha: ''
-      });
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message || 
-        'Erro ao criar conta. Tente novamente.'
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  return (
-    <div className="register-container">
-      <div className="register-card">
-        <h2>Criar Conta</h2>
-        <h3>Anotando - Controle de Glicemia</h3>
-        
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="nome">Nome</label>
-            <input
-              type="text"
-              id="nome"
-              name="nome"
-              value={formData.nome}
-              onChange={handleChange}
-              required
-              placeholder="Seu nome"
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="Seu email"
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="senha">Senha</label>
-            <input
-              type="password"
-              id="senha"
-              name="senha"
-              value={formData.senha}
-              onChange={handleChange}
-              required
-              placeholder="Sua senha"
-              minLength="6"
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="confirmarSenha">Confirmar Senha</label>
-            <input
-              type="password"
-              id="confirmarSenha"
-              name="confirmarSenha"
-              value={formData.confirmarSenha}
-              onChange={handleChange}
-              required
-              placeholder="Confirme sua senha"
-              minLength="6"
-            />
-          </div>
-          
-          <button 
-            type="submit" 
-            className="register-submit-button"
-            disabled={loading}
-          >
-            {loading ? 'Criando conta...' : 'Criar Conta'}
-          </button>
-        </form>
-        
-        <div className="login-link">
-          <p>Já tem uma conta?</p>
-          <a href="/login">Fazer login</a>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 // Componente para a página de dashboard
 const Dashboard = ({ isAuthenticated, setIsAuthenticated }) => {
@@ -230,7 +100,7 @@ const App = () => {
             isAuthenticated ? (
               <Navigate to="/dashboard" />
             ) : (
-              <RegisterPage />
+              <RegisterForm setIsAuthenticated={setIsAuthenticated} />
             )
           } 
         />
