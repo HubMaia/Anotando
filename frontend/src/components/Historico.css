@@ -308,6 +308,34 @@
   color: #34495e;
 }
 
+@media (max-width: 1024px) {
+  .filtro-campos {
+    flex-direction: column;
+  }
+
+  .filtro-campos .form-group {
+    min-width: 100%;
+    margin-bottom: 1rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .filtro-button,
+  .limpar-button {
+    align-self: center;
+    width: 100% ;
+  }
+
+  .limpar-filtro-button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  .historico-container{
+    max-width: 1000px;
+    min-width: 150px;
+  }
+}
+
 @media (max-width: 768px) {
   .filtro-campos {
     flex-direction: column;
@@ -348,7 +376,7 @@
 
 
 
-@media (max-width: 450px) {
+@media (max-width: 500px) {
   .filtro-campos {
     flex-direction: column;
   }
@@ -360,8 +388,8 @@
 
   .filtro-button,
   .limpar-button {
-    width: 50%;
-    margin-bottom: 0.5rem;
+    align-self: center;
+    width: 100%;
   }
 
   .limpar-filtro-button {
@@ -371,5 +399,89 @@
   .historico-container{
     max-width: 425px;
     min-width: 400px;
+  }
+}
+
+@media (max-width: 425px) {
+  .filtro-campos {
+    flex-direction: column;
+  }
+
+  .filtro-campos .form-group {
+    min-width: 100%;
+    margin-bottom: 1rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .filtro-button,
+  .limpar-button {
+    align-self: center;
+    width: 100% ;
+  }
+
+  .limpar-filtro-button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  .historico-container{
+    max-width: 400px;
+    min-width: 150px;
+  }
+}
+
+@media (max-width: 375px) {
+  .filtro-campos {
+    flex-direction: column;
+  }
+
+  .filtro-campos .form-group {
+    min-width: 100%;
+    margin-bottom: 1rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .filtro-button,
+  .limpar-button {
+    align-self: center;
+    width: 100% ;
+  }
+
+  .limpar-filtro-button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  .historico-container{
+    max-width: 350px;
+    min-width: 150px;
+  }
+}
+
+@media (max-width: 320px) {
+  .filtro-campos {
+    flex-direction: column;
+  }
+
+  .filtro-campos .form-group {
+    min-width: 100%;
+    margin-bottom: 1rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .filtro-button,
+  .limpar-button {
+    align-self: center;
+    width: 100% ;
+  }
+
+  .limpar-filtro-button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  .historico-container{
+    max-width: 300px;
+    min-width: 150px;
   }
 }
