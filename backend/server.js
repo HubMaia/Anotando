@@ -6,7 +6,7 @@ const registrosRouter = require('./routes/registros');
 require('dotenv').config();
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middlewares - Configuração CORS mais robusta para Azure
 const corsOptions = {

@@ -2,12 +2,12 @@
 FROM node:18 AS build
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy package files from frontend directory
+COPY frontend/package*.json ./
 RUN npm install --legacy-peer-deps
 
-# Copy all files
-COPY . .
+# Copy all files from frontend directory
+COPY frontend/ .
 
 # Build the app
 RUN npm run build
