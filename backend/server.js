@@ -20,6 +20,7 @@ const corsOptions = {
       'http://localhost:80',
       'http://localhost:3000',
       'https://localhost',
+      'https://anotando.azurewebsites.net',
       /^https?:\/\/.*\.azure.*$/,  // Permite subdomínios do Azure
     ];
     

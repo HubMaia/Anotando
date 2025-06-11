@@ -15,8 +15,8 @@ const LandingPage = () => {
       <main className="landing-main">
         <section className="landing-info">
           <h1 className="landing-title">Anotando</h1>
-          <p className="landing-subtitle">Estamos aqui pra te ajudar a anotar</p>
-          <Link to="/dashboard" className="landing-btn">EXPERIMENTE</Link>
+          <p className="landing-subtitle">Te ajudando no controle</p>
+          <button onClick={() => window.location.href = '/dashboard'} className="landing-btn">EXPERIMENTE</button>
         </section>
         <section className="landing-illustration">
           <img src={illustration} alt="Ilustração anotando" />

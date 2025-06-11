@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import LoginHeader from './header/LoginHeader';
+import { API_ENDPOINTS } from '../config';
 import './LoginForm.css';
 
 const LoginForm = ({ setIsAuthenticated }) => {
@@ -26,7 +27,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
     setLoading(true);
 
     try {
-      const response = await axios.post('/api/auth/login', {
+      const response = await axios.post(API_ENDPOINTS.AUTH.LOGIN, {
         email: formData.email,
         senha: formData.senha
       });
@@ -37,6 +38,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
       toast.success('Login realizado com sucesso!');
       navigate('/dashboard');
     } catch (error) {
+      console.error('Erro na requisição:', error);
       toast.error(
         error.response?.data?.message ||
         'Erro ao fazer login. Verifique suas credenciais.'

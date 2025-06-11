@@ -24,6 +24,7 @@ import almocoJejumImage from '../assets/images/ALMOÇO-JEJUM.png';
 import cafeTardeJejumImage from '../assets/images/CAFE-DA-TARDE-JEJUM.png';
 import jantaJejumImage from '../assets/images/JANTA-JEJUM.png';
 import './Historico.css';
+import { API_ENDPOINTS } from '../config';
 
 // Registrar os componentes necessários do Chart.js
 ChartJS.register(
@@ -73,7 +74,7 @@ const Historico = () => {
       }
       
       const response = await axios.get(
-        '/api/registros',
+        API_ENDPOINTS.REGISTROS.BASE,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -84,6 +85,7 @@ const Historico = () => {
       setRegistros(response.data.registros);
       setError('');
     } catch (error) {
+      console.error('Erro ao carregar registros:', error);
       setError(
         error.response?.data?.message || 
         'Erro ao carregar registros'
@@ -120,7 +122,7 @@ const Historico = () => {
       }
       
       const response = await axios.get(
-        `/api/registros/periodo/${filtro.dataInicio}/${filtro.dataFim}`,
+        API_ENDPOINTS.REGISTROS.PERIODO(filtro.dataInicio, filtro.dataFim),
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -131,6 +133,7 @@ const Historico = () => {
       setRegistros(response.data.registros);
       setError('');
     } catch (error) {
+      console.error('Erro ao filtrar registros:', error);
       setError(
         error.response?.data?.message || 
         'Erro ao filtrar registros'
@@ -154,7 +157,7 @@ const Historico = () => {
       }
       
       await axios.delete(
-        `/api/registros/${id}`,
+        `${API_ENDPOINTS.REGISTROS.BASE}/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -165,6 +168,7 @@ const Historico = () => {
       // Atualizar a lista após exclusão
       carregarRegistros();
     } catch (error) {
+      console.error('Erro ao excluir registro:', error);
       setError(
         error.response?.data?.message || 
         'Erro ao excluir registro'
@@ -346,7 +350,7 @@ const Historico = () => {
       }
 
       const response = await axios.get(
-        `/api/registros/${horario}`,
+        API_ENDPOINTS.REGISTROS.HORARIO(horario),
         {
           headers: {
             Authorization: `Bearer ${token}`
