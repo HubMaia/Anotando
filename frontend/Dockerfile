@@ -9,9 +9,6 @@ RUN npm install --legacy-peer-deps
 # Copy all files
 COPY . .
 
-# Debug: List contents of public directory
-RUN ls -la public/
-
 # Build the app
 RUN npm run build
 
