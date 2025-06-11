@@ -48,13 +48,6 @@ const Historico = () => {
     horario: ''
   });
   const [selectedDescription, setSelectedDescription] = useState(null);
-  const [editingRegistro, setEditingRegistro] = useState(null);
-  const [editFormData, setEditFormData] = useState({
-    data: '',
-    horario: '',
-    valor_glicemia: '',
-    descricao_refeicao: ''
-  });
   const [showGraphs, setShowGraphs] = useState(false);
 
   // Carregar registros ao montar o componente
@@ -181,28 +174,71 @@ const Historico = () => {
     return data.toLocaleDateString('pt-BR');
   };
 
-  const getStatusGlicemia = (valor, horario) => {
-    // Verifica se é uma medição em jejum (Antes)
-    const isJejum = horario.includes('Antes');
+  const formatarHorario = (horario) => {
+    if (!horario) return '';
     
-    if (valor < 70) return 'hipoglicemia';
+    const [refeicao, tipo] = horario.split(' - ');
     
-    if (isJejum) {
-      // Critérios para medição em jejum
-      if (valor >= 70 && valor <= 99) return 'normal';
-      if (valor >= 100 && valor <= 125) return 'pre-diabetes';
-      return 'diabetes';
+    if (refeicao === 'custom') return horario;
+    
+    const refeicaoFormatada = refeicao
+      .replace('Cafe', 'Café')
+      .replace('Almoco', 'Almoço')
+      .replace('Cafe-Tarde', 'Café da Tarde');
+    
+    if (tipo === 'Antes') {
+      return `Antes do ${refeicaoFormatada} (Em jejum)`;
     } else {
-      // Critérios para medição pós-refeição
-      if (valor < 200) return 'normal';
-      return 'diabetes';
+      return `Depois do ${refeicaoFormatada} (Após comer)`;
     }
   };
 
-  const truncateText = (text, maxLength = 50) => {
-    if (!text) return '-';
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...';
+  const handleImageClick = (horario) => {
+    setFiltro(prev => ({
+      ...prev,
+      horario: horario
+    }));
+    filtrarPorHorario(horario);
+  };
+
+  const filtrarPorHorario = async (horario) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        setError('Usuário não autenticado');
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(
+        API_ENDPOINTS.REGISTROS.HORARIO(horario),
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      
+      setRegistros(response.data.registros);
+      setError('');
+    } catch (error) {
+      setError(
+        error.response?.data?.message || 
+        'Erro ao filtrar registros'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const limparFiltroHorario = () => {
+    setFiltro(prev => ({
+      ...prev,
+      horario: ''
+    }));
+    carregarRegistros();
   };
 
   const handleDescriptionClick = (description) => {
@@ -214,19 +250,43 @@ const Historico = () => {
   };
 
   const getMealImage = (horario) => {
-    if (!horario) return null;
+    if (!horario) return novoImage;
     
-    if (horario.includes('Cafe-Tarde')) {
-      return cafeTardeImage;
-    } else if (horario.includes('Cafe')) {
-      return cafeImage;
-    } else if (horario.includes('Almoco')) {
-      return almocoImage;
-    } else if (horario.includes('Janta')) {
-      return jantaImage;
+    const [refeicao] = horario.split(' - ');
+    
+    switch (refeicao) {
+      case 'Cafe':
+        return cafeImage;
+      case 'Almoco':
+        return almocoImage;
+      case 'Cafe-Tarde':
+        return cafeTardeImage;
+      case 'Janta':
+        return jantaImage;
+      default:
+        return novoImage;
+    }
+  };
+
+  const truncateText = (text) => {
+    if (!text) return '';
+    return text.length > 100 ? text.substring(0, 100) + '...' : text;
+  };
+
+  const getStatusGlicemia = (valor, horario) => {
+    if (!horario) return '';
+    
+    const [refeicao, tipo] = horario.split(' - ');
+    
+    if (tipo === 'Antes') {
+      if (valor < 70) return 'hipoglicemia';
+      if (valor >= 70 && valor <= 99) return 'normal';
+      if (valor >= 100 && valor <= 125) return 'pre-diabetes';
+      return 'diabetes';
     } else {
-      // Se não for nenhum dos horários padrão, é um horário personalizado
-      return novoImage;
+      if (valor < 70) return 'hipoglicemia';
+      if (valor < 200) return 'normal';
+      return 'diabetes';
     }
   };
 
@@ -309,139 +369,6 @@ const Historico = () => {
     
     // Salvar o PDF
     doc.save('historico_registros.pdf');
-  };
-
-  const formatarHorario = (horario) => {
-    if (!horario) return '';
-    
-    const [refeicao, tipo] = horario.split(' - ');
-    
-    if (refeicao === 'custom') return horario;
-    
-    const refeicaoFormatada = refeicao
-      .replace('Cafe', 'Café')
-      .replace('Almoco', 'Almoço')
-      .replace('Cafe-Tarde', 'Café da Tarde');
-    
-    if (tipo === 'Antes') {
-      return `Antes do ${refeicaoFormatada} (Em jejum)`;
-    } else {
-      return `Depois do ${refeicaoFormatada} (Após comer)`;
-    }
-  };
-
-  const handleImageClick = (horario) => {
-    setFiltro(prev => ({
-      ...prev,
-      horario: horario
-    }));
-    filtrarPorHorario(horario);
-  };
-
-  const filtrarPorHorario = async (horario) => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
-        setError('Usuário não autenticado');
-        setLoading(false);
-        return;
-      }
-
-      const response = await axios.get(
-        API_ENDPOINTS.REGISTROS.HORARIO(horario),
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-      
-      setRegistros(response.data.registros);
-      setError('');
-    } catch (error) {
-      setError(
-        error.response?.data?.message || 
-        'Erro ao filtrar registros'
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const limparFiltroHorario = () => {
-    setFiltro(prev => ({
-      ...prev,
-      horario: ''
-    }));
-    carregarRegistros();
-  };
-
-  const handleEditClick = (registro) => {
-    setEditingRegistro(registro);
-    setEditFormData({
-      data: registro.data,
-      horario: registro.horario,
-      valor_glicemia: registro.valor_glicemia,
-      descricao_refeicao: registro.descricao_refeicao || ''
-    });
-  };
-
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setEditFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-    
-    try {
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
-        setError('Usuário não autenticado');
-        return;
-      }
-      
-      await axios.put(
-        `/api/registros/${editingRegistro.id}`,
-        editFormData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-      
-      // Atualizar a lista após edição
-      carregarRegistros();
-      setEditingRegistro(null);
-      setEditFormData({
-        data: '',
-        horario: '',
-        valor_glicemia: '',
-        descricao_refeicao: ''
-      });
-    } catch (error) {
-      setError(
-        error.response?.data?.message || 
-        'Erro ao editar registro'
-      );
-    }
-  };
-
-  const cancelEdit = () => {
-    setEditingRegistro(null);
-    setEditFormData({
-      data: '',
-      horario: '',
-      valor_glicemia: '',
-      descricao_refeicao: ''
-    });
   };
 
   const prepareChartData = () => {
@@ -563,12 +490,6 @@ const Historico = () => {
       <div className="historico-header">
         <h3>Histórico de Registros</h3>
         <div className="header-buttons">
-          <button 
-            className="graphs-button"
-            onClick={() => setShowGraphs(!showGraphs)}
-          >
-            {showGraphs ? 'Ocultar Gráficos' : 'Mostrar Gráficos'}
-          </button>
           {filtro.horario && (
             <button 
               className="limpar-filtro-button"
@@ -600,50 +521,50 @@ const Historico = () => {
       
       <div className="meal-carousel">
         <img 
-          src={cafeJejumImage} 
-          alt="Café da Manhã (Jejum)" 
+          src={cafeImage} 
+          alt="Café da Manhã" 
           className={`meal-image ${filtro.horario === 'Cafe - Antes' ? 'selected' : ''}`}
           onClick={() => handleImageClick('Cafe - Antes')}
         />
         <img 
-          src={cafeImage} 
-          alt="Café da Manhã" 
+          src={cafeJejumImage} 
+          alt="Café da Manhã (Jejum)" 
           className={`meal-image ${filtro.horario === 'Cafe - Depois' ? 'selected' : ''}`}
           onClick={() => handleImageClick('Cafe - Depois')}
         />
         <img 
-          src={almocoJejumImage} 
-          alt="Almoço (Jejum)" 
+          src={almocoImage} 
+          alt="Almoço" 
           className={`meal-image ${filtro.horario === 'Almoco - Antes' ? 'selected' : ''}`}
           onClick={() => handleImageClick('Almoco - Antes')}
         />
         <img 
-          src={almocoImage} 
-          alt="Almoço" 
+          src={almocoJejumImage} 
+          alt="Almoço (Jejum)" 
           className={`meal-image ${filtro.horario === 'Almoco - Depois' ? 'selected' : ''}`}
           onClick={() => handleImageClick('Almoco - Depois')}
         />
         <img 
-          src={cafeTardeJejumImage} 
-          alt="Café da Tarde (Jejum)" 
+          src={cafeTardeImage} 
+          alt="Café da Tarde" 
           className={`meal-image ${filtro.horario === 'Cafe-Tarde - Antes' ? 'selected' : ''}`}
           onClick={() => handleImageClick('Cafe-Tarde - Antes')}
         />
         <img 
-          src={cafeTardeImage} 
-          alt="Café da Tarde" 
+          src={cafeTardeJejumImage} 
+          alt="Café da Tarde (Jejum)" 
           className={`meal-image ${filtro.horario === 'Cafe-Tarde - Depois' ? 'selected' : ''}`}
           onClick={() => handleImageClick('Cafe-Tarde - Depois')}
         />
         <img 
-          src={jantaJejumImage} 
-          alt="Janta (Jejum)" 
+          src={jantaImage} 
+          alt="Janta" 
           className={`meal-image ${filtro.horario === 'Janta - Antes' ? 'selected' : ''}`}
           onClick={() => handleImageClick('Janta - Antes')}
         />
         <img 
-          src={jantaImage} 
-          alt="Janta" 
+          src={jantaJejumImage} 
+          alt="Janta (Jejum)" 
           className={`meal-image ${filtro.horario === 'Janta - Depois' ? 'selected' : ''}`}
           onClick={() => handleImageClick('Janta - Depois')}
         />
@@ -680,20 +601,21 @@ const Historico = () => {
               />
             </div>
             
-            <button type="submit" className="filtro-button">
-              Filtrar
-            </button>
-            
-            <button 
-              type="button" 
-              className="limpar-button"
-              onClick={() => {
-                setFiltro({ dataInicio: '', dataFim: '' });
-                carregarRegistros();
-              }}
-            >
-              Limpar
-            </button>
+            <div className="filtro-botoes">
+              <button type="submit" className="filtro-button">
+                Filtrar
+              </button>
+              <button 
+                type="button" 
+                className="limpar-button"
+                onClick={() => {
+                  setFiltro({ dataInicio: '', dataFim: '' });
+                  carregarRegistros();
+                }}
+              >
+                Limpar
+              </button>
+            </div>
           </div>
         </form>
       </div>
@@ -736,12 +658,6 @@ const Historico = () => {
                   </td>
                   <td className="acoes-cell">
                     <button 
-                      className="editar-button"
-                      onClick={() => handleEditClick(registro)}
-                    >
-                      Editar
-                    </button>
-                    <button 
                       className="excluir-button"
                       onClick={() => excluirRegistro(registro.id)}
                     >
@@ -774,75 +690,6 @@ const Historico = () => {
             <div className="modal-body">
               {selectedDescription}
             </div>
-          </div>
-        </div>
-      )}
-
-      {editingRegistro && (
-        <div className="modal-overlay" onClick={cancelEdit}>
-          <div className="modal-content edit-modal" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Editar Registro</h3>
-              <button className="close-button" onClick={cancelEdit}>&times;</button>
-            </div>
-            <form onSubmit={handleEditSubmit} className="edit-form">
-              <div className="form-group">
-                <label htmlFor="edit-data">Data</label>
-                <input
-                  type="date"
-                  id="edit-data"
-                  name="data"
-                  value={editFormData.data}
-                  onChange={handleEditChange}
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="edit-horario">Horário</label>
-                <input
-                  type="text"
-                  id="edit-horario"
-                  name="horario"
-                  value={editFormData.horario}
-                  onChange={handleEditChange}
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="edit-valor-glicemia">Glicemia (mg/dL)</label>
-                <input
-                  type="number"
-                  id="edit-valor-glicemia"
-                  name="valor_glicemia"
-                  value={editFormData.valor_glicemia}
-                  onChange={handleEditChange}
-                  required
-                  min="0"
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="edit-descricao">Descrição da Refeição</label>
-                <textarea
-                  id="edit-descricao"
-                  name="descricao_refeicao"
-                  value={editFormData.descricao_refeicao}
-                  onChange={handleEditChange}
-                  rows="4"
-                />
-              </div>
-              
-              <div className="form-actions">
-                <button type="submit" className="save-button">
-                  Salvar
-                </button>
-                <button type="button" className="cancel-button" onClick={cancelEdit}>
-                  Cancelar
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}

@@ -105,21 +105,30 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  align-items: stretch;
 }
 
 .filtro-campos .form-group {
   width: 100%;
+  max-width: 220px;
+}
+
+.filtro-campos .form-group input[type="date"] {
+  height: 48px;
+  font-size: 1rem;
+  padding: 0 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
 }
 
 .filtro-button,
 .limpar-button {
-  width: 100%;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  padding: 0.9rem 2rem;
+  font-size: 1rem;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .filtro-button {
@@ -313,33 +322,6 @@
   color: #34495e;
 }
 
-@media (min-width: 768px) {
-  .historico-header {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .filtro-campos {
-    flex-direction: row;
-    align-items: flex-end;
-  }
-
-  .filtro-campos .form-group {
-    flex: 1;
-  }
-
-  .filtro-button,
-  .limpar-button {
-    width: auto;
-  }
-
-  .meal-image {
-    width: 60px;
-    height: 60px;
-  }
-}
-
 .header-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -359,6 +341,108 @@
 
 .limpar-filtro-button:hover {
   background-color: #c0392b;
+}
+
+.graphs-container {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.graph-wrapper {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.graph-wrapper canvas {
+  min-width: 350px;
+  width: 100% !important;
+  max-width: 100%;
+  height: auto !important;
+  display: block;
+}
+
+.graphs-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.graphs-button:hover {
+  background-color: #2980b9;
+}
+
+.filtro-botoes {
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .historico-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .filtro-campos {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .filtro-campos .form-group {
+    flex: none;
+    width: 220px;
+    margin-bottom: 0;
+  }
+
+  .filtro-button,
+  .limpar-button {
+    width: auto;
+    margin-right: 0.5rem;
+  }
+  .limpar-button {
+    margin-right: 0;
+  }
+
+  .meal-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .filtro-botoes {
+    align-items: center;
+    margin-left: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .graphs-container {
+    padding: 0.5rem;
+  }
+  
+  .graph-wrapper {
+    padding: 0.5rem;
+  }
+
+  .filtro-botoes {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 }
 
 @media (max-width: 500px) {
@@ -384,6 +468,13 @@
   .historico-container{
     max-width: 425px;
     min-width: 400px;
+  }
+  
+  .graph-wrapper {
+    padding: 0.25rem;
+  }
+  .graph-wrapper canvas {
+    min-width: 300px;
   }
 }
 
@@ -471,179 +562,6 @@
   }
 }
 
-.acoes-cell {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-.editar-button {
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.5rem 0.75rem;
-  cursor: pointer;
-  font-size: 0.875rem;
-  transition: background-color 0.3s;
-}
-
-.editar-button:hover {
-  background-color: #2980b9;
-}
-
-.edit-modal {
-  max-width: 500px;
-  width: 90%;
-}
-
-.edit-modal .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid #ecf0f1;
-}
-
-.edit-modal .modal-header h3 {
-  margin: 0;
-  color: #2c3e50;
-  font-size: 1.25rem;
-}
-
-.edit-form {
-  padding: 1.5rem;
-}
-
-.edit-form .form-group {
-  margin-bottom: 1.25rem;
-}
-
-.edit-form label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #34495e;
-}
-
-.edit-form input,
-.edit-form textarea {
-  width: 100%;
-  padding: 0.75rem;
-  font-size: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  transition: border-color 0.3s;
-}
-
-.edit-form input:focus,
-.edit-form textarea:focus {
-  outline: none;
-  border-color: #03c596;
-}
-
-.edit-form .form-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.edit-form .save-button {
-  background-color: #03c596;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.75rem 1.25rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  flex: 1;
-}
-
-.edit-form .save-button:hover {
-  background-color: #02a37d;
-}
-
-.edit-form .cancel-button {
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.75rem 1.25rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  flex: 1;
-}
-
-.edit-form .cancel-button:hover {
-  background-color: #c0392b;
-}
-
-.graphs-container {
-  margin: 1rem 0;
-  padding: 0.75rem;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.graph-wrapper {
-  margin-bottom: 1rem;
-  padding: 0.75rem;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.graph-wrapper canvas {
-  min-width: 350px;
-  width: 100% !important;
-  max-width: 100%;
-  height: auto !important;
-  display: block;
-}
-
-.graphs-button {
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.graphs-button:hover {
-  background-color: #2980b9;
-}
-
-@media (max-width: 768px) {
-  .graphs-container {
-    padding: 0.5rem;
-  }
-  
-  .graph-wrapper {
-    padding: 0.5rem;
-  }
-}
-
-@media (max-width: 500px) {
-  .graph-wrapper {
-    padding: 0.25rem;
-  }
-  .graph-wrapper canvas {
-    min-width: 300px;
-  }
-}
-
 @media (max-width: 600px) {
   .acoes-cell {
     display: flex;
@@ -652,7 +570,7 @@
     width: 100%;
     margin-top: 0.5rem;
   }
-  .editar-button, .excluir-button {
+  .excluir-button {
     width: 100%;
     margin: 0;
     font-size: 1rem;

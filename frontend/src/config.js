@@ -1,4 +1,4 @@
-const API_URL = process.env.REACT_APP_API_URL || 'https://anotando-backend.azurewebsites.net';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
 export const API_ENDPOINTS = {
   AUTH: {
