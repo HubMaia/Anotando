@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import LoginHeader from './header/LoginHeader';
 import './LoginForm.css';
 
 const LoginForm = ({ setIsAuthenticated }) => {
@@ -37,7 +38,7 @@ const LoginForm = ({ setIsAuthenticated }) => {
       navigate('/dashboard');
     } catch (error) {
       toast.error(
-        error.response?.data?.message || 
+        error.response?.data?.message ||
         'Erro ao fazer login. Verifique suas credenciais.'
       );
     } finally {
@@ -46,56 +47,61 @@ const LoginForm = ({ setIsAuthenticated }) => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <h2>Login</h2>
-        <h3>Anotando - Controle de Glicemia</h3>
-        
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="email">Email <span style={{color:'#e74c3c'}}>*</span></label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="Seu email"
-            />
+    <div className="login-page">
+      <LoginHeader />
+      <div className="login-container">
+        <div className="login-card">
+          <h2>Login</h2>
+          <h3>Anotando - Controle de Glicemia</h3>
+
+          <form onSubmit={handleSubmit}>
+            <div className="form-fields">
+              <div className="form-group full-width">
+                <label htmlFor="email">Email <span style={{ color: '#e74c3c' }}>*</span></label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  placeholder="Seu email"
+                />
+              </div>
+
+              <div className="form-group full-width">
+                <label htmlFor="senha">Senha <span style={{ color: '#e74c3c' }}>*</span></label>
+                <input
+                  type="password"
+                  id="senha"
+                  name="senha"
+                  value={formData.senha}
+                  onChange={handleChange}
+                  required
+                  placeholder="Sua senha"
+                  minLength={6}
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="login-button full-width"
+              disabled={loading}
+            >
+              {loading ? 'Entrando...' : 'Entrar'}
+            </button>
+          </form>
+
+          <div className="register-link">
+            <p>Não tem uma conta?</p>
+            <button
+              className="register-button"
+              onClick={() => navigate('/register')}
+            >
+              Cadastre-se
+            </button>
           </div>
-          
-          <div className="form-group">
-            <label htmlFor="senha">Senha <span style={{color:'#e74c3c'}}>*</span></label>
-            <input
-              type="password"
-              id="senha"
-              name="senha"
-              value={formData.senha}
-              onChange={handleChange}
-              required
-              placeholder="Sua senha"
-              minLength={6}
-            />
-          </div>
-          
-          <button 
-            type="submit" 
-            className="login-button"
-            disabled={loading}
-          >
-            {loading ? 'Entrando...' : 'Entrar'}
-          </button>
-        </form>
-        
-        <div className="register-link">
-          <p>Não tem uma conta?</p>
-          <button 
-            className="register-button" 
-            onClick={() => navigate('/register')}
-          >
-            Cadastre-se
-          </button>
         </div>
       </div>
     </div>

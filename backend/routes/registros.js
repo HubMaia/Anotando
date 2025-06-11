@@ -83,36 +83,26 @@ router.post('/', async (req, res) => {
 // Atualizar um registro
 router.put('/:id', async (req, res) => {
   try {
-    const registroId = req.params.id;
+    const { id } = req.params;
     const userId = req.userData.userId;
     const { data, horario, valor_glicemia, descricao_refeicao } = req.body;
     
-    // Validar dados
-    if (!data || !horario || !valor_glicemia) {
-      return res.status(400).json({ message: 'Todos os campos são obrigatórios' });
-    }
-    
-    // Validar o horário (deve ter no máximo 50 caracteres)
-    if (horario.length > 50) {
-      return res.status(400).json({ 
-        message: 'O horário deve ter no máximo 50 caracteres'
-      });
-    }
-    
-    // Verificar se o registro pertence ao usuário
-    const [registros] = await pool.query(
+    // Verificar se o registro existe e pertence ao usuário
+    const [registro] = await pool.query(
       'SELECT * FROM registros WHERE id = ? AND usuario_id = ?',
-      [registroId, userId]
+      [id, userId]
     );
     
-    if (registros.length === 0) {
+    if (registro.length === 0) {
       return res.status(404).json({ message: 'Registro não encontrado' });
     }
     
-    // Atualizar registro
+    // Atualizar o registro
     await pool.query(
-      'UPDATE registros SET data = ?, horario = ?, valor_glicemia = ?, descricao_refeicao = ? WHERE id = ? AND usuario_id = ?',
-      [data, horario, valor_glicemia, descricao_refeicao || null, registroId, userId]
+      `UPDATE registros 
+       SET data = ?, horario = ?, valor_glicemia = ?, descricao_refeicao = ?
+       WHERE id = ? AND usuario_id = ?`,
+      [data, horario, valor_glicemia, descricao_refeicao, id, userId]
     );
     
     res.status(200).json({ message: 'Registro atualizado com sucesso' });

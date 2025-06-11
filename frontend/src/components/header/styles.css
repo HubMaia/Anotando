@@ -1,7 +1,7 @@
 .dashboard-header {
   background-color: #03c596;
   color: white;
-  padding: 0.5rem 1.5rem;
+  padding: 0.5rem 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -23,14 +23,12 @@
 }
 
 .app-logo {
-  height: 40px;
+  height: 32px;
   width: auto;
 }
 
 .header-center {
-  flex: 1;
-  max-width: 600px;
-  margin: 0 2rem;
+  display: none;
 }
 
 .search-form {
@@ -127,11 +125,7 @@
 }
 
 .user-name {
-  font-size: 0.9rem;
-  max-width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: none;
 }
 
 .user-dropdown {
@@ -188,6 +182,32 @@
   fill: currentColor;
 }
 
+@media (min-width: 768px) {
+  .dashboard-header {
+    padding: 0.5rem 1.5rem;
+  }
+
+  .app-logo {
+    height: 40px;
+  }
+
+  .header-center {
+    display: block;
+    flex: 1;
+    max-width: 600px;
+    margin: 0 2rem;
+  }
+
+  .user-name {
+    display: block;
+    font-size: 0.9rem;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
 @media (max-width: 768px) {
   .dashboard-header {
     padding: 0.5rem 1rem;
@@ -220,6 +240,79 @@
   }
 
   .app-logo {
+    height: 32px;
+  }
+}
+
+.login-header {
+  background-color: #03c596;
+  color: white;
+  padding: 0.5rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 64px;
+}
+
+.login-header .header-left {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.login-header .logo-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.login-header .app-logo {
+  height: 40px;
+  width: auto;
+  margin-right: 8px;
+}
+
+.login-header .header-right {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.login-header .register-link {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border: 2px solid white;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.login-header .register-link:hover {
+  background-color: white;
+  color: #03c596;
+}
+
+@media (max-width: 576px) {
+  .login-header {
+    padding: 0.5rem 1rem;
+    height: 48px;
+  }
+  .login-header .app-logo {
+    height: 32px;
+  }
+  .login-header .register-link {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
     height: 32px;
   }
 } 

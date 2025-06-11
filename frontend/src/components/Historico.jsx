@@ -2,6 +2,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { Line, Bar } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 import cafeImage from '../assets/images/CAFE-DA-MANHA.png';
 import cafeTardeImage from '../assets/images/CAFE-DA-TARDE.png';
 import almocoImage from '../assets/images/ALMOÇO.png';
@@ -13,6 +25,18 @@ import cafeTardeJejumImage from '../assets/images/CAFE-DA-TARDE-JEJUM.png';
 import jantaJejumImage from '../assets/images/JANTA-JEJUM.png';
 import './Historico.css';
 
+// Registrar os componentes necessários do Chart.js
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
 const Historico = () => {
   const [registros, setRegistros] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,6 +47,14 @@ const Historico = () => {
     horario: ''
   });
   const [selectedDescription, setSelectedDescription] = useState(null);
+  const [editingRegistro, setEditingRegistro] = useState(null);
+  const [editFormData, setEditFormData] = useState({
+    data: '',
+    horario: '',
+    valor_glicemia: '',
+    descricao_refeicao: ''
+  });
+  const [showGraphs, setShowGraphs] = useState(false);
 
   // Carregar registros ao montar o componente
   useEffect(() => {
@@ -342,11 +374,197 @@ const Historico = () => {
     carregarRegistros();
   };
 
+  const handleEditClick = (registro) => {
+    setEditingRegistro(registro);
+    setEditFormData({
+      data: registro.data,
+      horario: registro.horario,
+      valor_glicemia: registro.valor_glicemia,
+      descricao_refeicao: registro.descricao_refeicao || ''
+    });
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        setError('Usuário não autenticado');
+        return;
+      }
+      
+      await axios.put(
+        `/api/registros/${editingRegistro.id}`,
+        editFormData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      
+      // Atualizar a lista após edição
+      carregarRegistros();
+      setEditingRegistro(null);
+      setEditFormData({
+        data: '',
+        horario: '',
+        valor_glicemia: '',
+        descricao_refeicao: ''
+      });
+    } catch (error) {
+      setError(
+        error.response?.data?.message || 
+        'Erro ao editar registro'
+      );
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingRegistro(null);
+    setEditFormData({
+      data: '',
+      horario: '',
+      valor_glicemia: '',
+      descricao_refeicao: ''
+    });
+  };
+
+  const prepareChartData = () => {
+    // Ordenar registros por data e horário
+    const sortedRegistros = [...registros].sort((a, b) => {
+      const dateA = new Date(a.data + 'T' + a.horario);
+      const dateB = new Date(b.data + 'T' + b.horario);
+      return dateA - dateB;
+    });
+
+    const labels = sortedRegistros.map(registro => 
+      `${formatarData(registro.data)} ${formatarHorario(registro.horario)}`
+    );
+    
+    const glicemiaData = sortedRegistros.map(registro => registro.valor_glicemia);
+
+    // Criar datasets para diferentes tipos de medição
+    const datasets = [
+      {
+        label: 'Glicemia (mg/dL)',
+        data: glicemiaData,
+        borderColor: '#03c596',
+        backgroundColor: 'rgba(3, 197, 150, 0.1)',
+        tension: 0.4,
+        fill: true,
+      }
+    ];
+
+    return {
+      labels,
+      datasets,
+    };
+  };
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Histórico de Glicemia',
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: false,
+        title: {
+          display: true,
+          text: 'Glicemia (mg/dL)',
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: 'Data e Horário',
+        },
+      },
+    },
+  };
+
+  const prepareBarChartData = () => {
+    // Agrupar registros por horário
+    const horarios = {};
+    registros.forEach(registro => {
+      const horario = registro.horario;
+      if (!horarios[horario]) {
+        horarios[horario] = {
+          total: 0,
+          count: 0,
+        };
+      }
+      horarios[horario].total += registro.valor_glicemia;
+      horarios[horario].count += 1;
+    });
+
+    const labels = Object.keys(horarios).map(formatarHorario);
+    const data = Object.values(horarios).map(h => h.total / h.count);
+
+    return {
+      labels,
+      datasets: [
+        {
+          label: 'Média de Glicemia por Horário',
+          data,
+          backgroundColor: 'rgba(3, 197, 150, 0.6)',
+          borderColor: '#03c596',
+          borderWidth: 1,
+        },
+      ],
+    };
+  };
+
+  const barChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Média de Glicemia por Horário',
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: false,
+        title: {
+          display: true,
+          text: 'Glicemia (mg/dL)',
+        },
+      },
+    },
+  };
+
   return (
     <div className="historico-container">
       <div className="historico-header">
         <h3>Histórico de Registros</h3>
         <div className="header-buttons">
+          <button 
+            className="graphs-button"
+            onClick={() => setShowGraphs(!showGraphs)}
+          >
+            {showGraphs ? 'Ocultar Gráficos' : 'Mostrar Gráficos'}
+          </button>
           {filtro.horario && (
             <button 
               className="limpar-filtro-button"
@@ -364,6 +582,17 @@ const Historico = () => {
           </button>
         </div>
       </div>
+      
+      {showGraphs && registros.length > 0 && (
+        <div className="graphs-container">
+          <div className="graph-wrapper">
+            <Line data={prepareChartData()} options={chartOptions} />
+          </div>
+          <div className="graph-wrapper">
+            <Bar data={prepareBarChartData()} options={barChartOptions} />
+          </div>
+        </div>
+      )}
       
       <div className="meal-carousel">
         <img 
@@ -501,7 +730,13 @@ const Historico = () => {
                       </span>
                     ) : '-'}
                   </td>
-                  <td>
+                  <td className="acoes-cell">
+                    <button 
+                      className="editar-button"
+                      onClick={() => handleEditClick(registro)}
+                    >
+                      Editar
+                    </button>
                     <button 
                       className="excluir-button"
                       onClick={() => excluirRegistro(registro.id)}
@@ -535,6 +770,75 @@ const Historico = () => {
             <div className="modal-body">
               {selectedDescription}
             </div>
+          </div>
+        </div>
+      )}
+
+      {editingRegistro && (
+        <div className="modal-overlay" onClick={cancelEdit}>
+          <div className="modal-content edit-modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Editar Registro</h3>
+              <button className="close-button" onClick={cancelEdit}>&times;</button>
+            </div>
+            <form onSubmit={handleEditSubmit} className="edit-form">
+              <div className="form-group">
+                <label htmlFor="edit-data">Data</label>
+                <input
+                  type="date"
+                  id="edit-data"
+                  name="data"
+                  value={editFormData.data}
+                  onChange={handleEditChange}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="edit-horario">Horário</label>
+                <input
+                  type="text"
+                  id="edit-horario"
+                  name="horario"
+                  value={editFormData.horario}
+                  onChange={handleEditChange}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="edit-valor-glicemia">Glicemia (mg/dL)</label>
+                <input
+                  type="number"
+                  id="edit-valor-glicemia"
+                  name="valor_glicemia"
+                  value={editFormData.valor_glicemia}
+                  onChange={handleEditChange}
+                  required
+                  min="0"
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="edit-descricao">Descrição da Refeição</label>
+                <textarea
+                  id="edit-descricao"
+                  name="descricao_refeicao"
+                  value={editFormData.descricao_refeicao}
+                  onChange={handleEditChange}
+                  rows="4"
+                />
+              </div>
+              
+              <div className="form-actions">
+                <button type="submit" className="save-button">
+                  Salvar
+                </button>
+                <button type="button" className="cancel-button" onClick={cancelEdit}>
+                  Cancelar
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

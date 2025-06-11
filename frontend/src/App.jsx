@@ -9,6 +9,7 @@ import RegistroForm from './components/RegistroForm';
 import Historico from './components/Historico';
 import UserProfile from './components/UserProfile';
 import Header from './components/header';
+import Footer from './components/Footer';
 import logo from './assets/images/ANOTANDO-LOGO.png';
 import LandingPage from './components/LandingPage';
 import './App.css';
@@ -71,63 +72,66 @@ const App = () => {
   
   return (
     <Router>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      <Routes>
-        <Route 
-          path="/login" 
-          element={
-            isAuthenticated ? (
-              <Navigate to="/dashboard" />
-            ) : (
-              <LoginForm setIsAuthenticated={setIsAuthenticated} />
-            )
-          } 
+      <div className="app-container">
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
         />
-        <Route 
-          path="/register" 
-          element={
-            isAuthenticated ? (
-              <Navigate to="/dashboard" />
-            ) : (
-              <RegisterForm setIsAuthenticated={setIsAuthenticated} />
-            )
-          } 
-        />
-        <Route 
-          path="/dashboard" 
-          element={
-            <Dashboard 
-              isAuthenticated={isAuthenticated} 
-              setIsAuthenticated={setIsAuthenticated} 
-            />
-          } 
-        />
-        <Route 
-          path="/profile" 
-          element={
-            isAuthenticated ? (
-              <UserProfile setIsAuthenticated={setIsAuthenticated} />
-            ) : (
-              <Navigate to="/login" />
-            )
-          } 
-        />
-        <Route 
-          path="/" 
-          element={<LandingPage />} 
-        />
-      </Routes>
+        <Routes>
+          <Route 
+            path="/login" 
+            element={
+              isAuthenticated ? (
+                <Navigate to="/dashboard" />
+              ) : (
+                <LoginForm setIsAuthenticated={setIsAuthenticated} />
+              )
+            } 
+          />
+          <Route 
+            path="/register" 
+            element={
+              isAuthenticated ? (
+                <Navigate to="/dashboard" />
+              ) : (
+                <RegisterForm setIsAuthenticated={setIsAuthenticated} />
+              )
+            } 
+          />
+          <Route 
+            path="/dashboard" 
+            element={
+              <Dashboard 
+                isAuthenticated={isAuthenticated} 
+                setIsAuthenticated={setIsAuthenticated} 
+              />
+            } 
+          />
+          <Route 
+            path="/profile" 
+            element={
+              isAuthenticated ? (
+                <UserProfile setIsAuthenticated={setIsAuthenticated} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            } 
+          />
+          <Route 
+            path="/" 
+            element={<LandingPage />} 
+          />
+        </Routes>
+        <Footer />
+      </div>
     </Router>
   );
 };

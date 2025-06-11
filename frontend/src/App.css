@@ -103,7 +103,7 @@ body {
 
 .dashboard-content {
   flex: 1;
-  padding: 2rem;
+  padding: 1rem;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
@@ -112,7 +112,7 @@ body {
 .dashboard-grid {
   display: grid;
   grid-template-columns: 1fr 2fr;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 /* Responsividade */
@@ -127,14 +127,17 @@ body {
 }
 
 @media (max-width: 576px) {
-  .dashboard-header {
-    flex-direction: column;
-    text-align: center;
-    gap: 1rem;
+  .dashboard-content {
+    padding: 0.5rem;
   }
   
-  .user-info {
-    flex-direction: column;
+  .dashboard-grid {
     gap: 0.5rem;
   }
+}
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 } 
