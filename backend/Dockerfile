@@ -6,11 +6,18 @@ WORKDIR /app
 # para o WORKDIR /app do container.
 COPY backend/package*.json ./ 
 
-# Limpa o cache do npm e instala as dependências.
-RUN npm cache clean --force && npm install
+# Limpa o cache do npm e instala as dependências com verbose para debug
+RUN npm cache clean --force
+RUN npm install --verbose --no-optional
+
+# Verifica se as dependências foram instaladas
+RUN ls -la node_modules/
 
 # Copia o restante dos arquivos da pasta backend do host para o WORKDIR /app do container.
 COPY backend/. . 
+
+# Verifica se o express foi instalado
+RUN ls -la node_modules/express/ || echo "Express não encontrado!"
 
 EXPOSE 3000
 CMD ["node", "server.js"]
