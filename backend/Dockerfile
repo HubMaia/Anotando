@@ -25,6 +25,5 @@ RUN node -e "console.log('Node version:', process.version); try { require('expre
 
 EXPOSE 3000
 
-# Usar PM2 para melhor gerenciamento de processo
-RUN npm install pm2 -g
-CMD ["pm2-runtime", "start", "server.js", "--name", "backend"]
+# Comando simples para iniciar o servidor
+CMD ["node", "server.js"]

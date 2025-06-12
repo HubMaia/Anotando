@@ -5,10 +5,10 @@ sudo docker-compose down
 sudo docker system prune -f
 
 echo "🔨 Construindo backend..."
-sudo docker-compose build backend --no-cache
+sudo docker-compose build --no-cache backend
 
-echo "🧪 Testando backend isoladamente..."
-sudo docker run --rm --name test-backend anotando-backend echo "Backend container criado com sucesso!"
+echo "🧪 Testando se o build funcionou..."
+sudo docker images | grep anotando-backend
 
 echo "🔄 Reconstruindo tudo..."
 sudo docker-compose build --no-cache
