@@ -1,23 +1,30 @@
 # Dockerfile para o backend Node.js
-FROM node:18
+FROM node:18-alpine
+
+# Criar usuário não-root para segurança
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nodejs -u 1001
+
 WORKDIR /app
 
-# Copia os arquivos package.json e package-lock.json da pasta backend do host
-# para o WORKDIR /app do container.
-COPY backend/package*.json ./ 
+# Mudar proprietário do diretório de trabalho
+RUN chown nodejs:nodejs /app
+USER nodejs
 
-# Limpa o cache do npm e instala as dependências com verbose para debug
-RUN npm cache clean --force
-RUN npm install --verbose --no-optional
+# Copia apenas os arquivos de dependências primeiro (para otimizar cache)
+COPY --chown=nodejs:nodejs backend/package*.json ./
 
-# Verifica se as dependências foram instaladas
-RUN ls -la node_modules/
+# Instala as dependências
+RUN npm ci --only=production --silent
 
-# Copia o restante dos arquivos da pasta backend do host para o WORKDIR /app do container.
-COPY backend/. . 
+# Copia o código da aplicação
+COPY --chown=nodejs:nodejs backend/ ./
 
-# Verifica se o express foi instalado
-RUN ls -la node_modules/express/ || echo "Express não encontrado!"
+# Verificação final
+RUN node -e "console.log('Node version:', process.version); try { require('express'); console.log('✅ Express loaded successfully'); } catch(e) { console.log('❌ Express error:', e.message); process.exit(1); }"
 
 EXPOSE 3000
-CMD ["node", "server.js"]
+
+# Usar PM2 para melhor gerenciamento de processo
+RUN npm install pm2 -g
+CMD ["pm2-runtime", "start", "server.js", "--name", "backend"]
