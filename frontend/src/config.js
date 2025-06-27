@@ -17,6 +17,7 @@ export const API_ENDPOINTS = {
   },
   REGISTROS: {
     BASE: `${API_URL}/api/registros`,
-    PERIODO: (inicio, fim) => `${API_URL}/api/registros/periodo/${inicio}/${fim}`
+    PERIODO: (inicio, fim) => `${API_URL}/api/registros/periodo/${inicio}/${fim}`,
+    HORARIO: (horario) => `${API_URL}/api/registros/horario/${horario}`
   }
-}; 
+};

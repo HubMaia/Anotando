@@ -1,3 +1,5 @@
+version: '3'
+
 services:
   db:
     image: mysql:8.0
@@ -5,14 +7,12 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: anotandodb
-    ports:
-      - "3306:3306"
+    # Removido as portas expostas para produção (acesso apenas interno)
     volumes:
       - db_data:/var/lib/mysql
       - ./backend/migrations:/docker-entrypoint-initdb.d
     healthcheck:
-      test:
-        ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234"]
       interval: 5s
       timeout: 3s
       retries: 20
@@ -30,24 +30,39 @@ services:
       DB_NAME: anotandodb
       JWT_SECRET: JWT_SECRET
       NODE_ENV: production
-    ports:
-      - "3000:3000"
     depends_on:
       db:
         condition: service_healthy
-    # VOLUMES DE DESENVOLVIMENTO REMOVIDOS PARA PRODUÇÃO
 
   frontend:
     build:
       context: .
       dockerfile: frontend/Dockerfile
     restart: always
-    ports:
-      - "80:80"
     depends_on:
       backend:
         condition: service_started
-    # VOLUMES DE DESENVOLVIMENTO REMOVIDOS PARA PRODUÇÃO
+
+  nginx:
+    image: nginx:latest
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    depends_on:
+      - frontend
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 1d & wait $${!}; done'"
+    # isso mantém o container vivo, útil para usar com renew se quiser
 
 volumes:
   db_data:
